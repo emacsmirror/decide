@@ -21,24 +21,24 @@ All the decide-mode shortcuts have ? as a prefix.
 The keys pressed have been awkwardly inserted in
 the example text below.
 
-- Answer yes an no questions. Like this? -> YES *? ?*
-- Roll dice: [2d6] -> (5 1) = 6 *? D*
-- Roll dice with modifier: [2d6+1] -> (5 3) +1 = 9 *? d 2 d 6 + 1 RET*
-- Roll more unusual dice, like FATE/Fudge dice: [4dF] -> (- 0 + +) = 1 *? F*
-- There are several special shortcuts for dice to save you some typing: [1d20] -> = 20 *? 2 0*
-- Draw a cards: [<card>] -> 2 Clubs *? t c a r d RET*
-- Pick a number from a range: [1-10] -> 5 *? r 1 - 1 0 RET*
-- Pick a number from a range, but lower numbers more likely: [1-10 (lowest of 2)] -> 4 *? r 1 < < 1 0 RET*
-- Make lower numbers even more likely by adding more signs: [1-10 (lowest of 4)] -> 1 *? r 1 < < < < 1 0 RET*
-- Of course it works to make higher numbers more likely as well: [1-10 (highest of 3)] -> 9 *? r 1 > > > 1 0 RET*
-- And you can make numbers closer to the center of the range: [1-10 (average of 3)] -> 4 *? r 1 - - - 1 0 RET*
+- Answer yes an no questions. Like this? -> YES *(? ?)*
+- Roll dice: [2d6] -> (5 1) = 6 *(? D)*
+- Roll dice with modifier: [2d6+1] -> (5 3) +1 = 9 *(? d 2 d 6 + 1 RET)*
+- Roll more unusual dice, like FATE/Fudge dice: [4dF] -> (- 0 + +) = 1 *(? F)*
+- There are several special shortcuts for dice to save you some typing: [1d20] -> = 20 *(? 2 0)*
+- Draw a cards: [<card>] -> 2 Clubs *(? t c a r d RET)*
+- Pick a number from a range: [1-10] -> 5 *(? r 1 - 1 0 RET)*
+- Pick a number from a range, but lower numbers more likely: [1-10 (lowest of 2)] -> 4 *(? r 1 < < 1 0 RET)*
+- Make lower numbers even more likely by adding more signs: [1-10 (lowest of 4)] -> 1 *(? r 1 < < < < 1 0 RET)*
+- Of course it works to make higher numbers more likely as well: [1-10 (highest of 3)] -> 9 *(? r 1 > > > 1 0 RET)*
+- And you can make numbers closer to the center of the range: [1-10 (average of 3)] -> 4 *(? r 1 - - - 1 0 RET)*
 - Random directions:
-- [(N,S,E,W)] -> N *? w 4*
-- [(N,S,E,W,NE,NW,SE,SW)] -> NW *? w 8*
-- [(forward,left,right,back)] -> right *? W 4*
+- [(N,S,E,W)] -> N *(? w 4)*
+- [(N,S,E,W,NE,NW,SE,SW)] -> NW *(? w 8)*
+- [(forward,left,right,back)] -> right *(? W 4)*
 - ... and a few more like those.
-- Generate strings from silly included example tables: [<example-dragon>] -> 3 ice dragons *? t e x a m p l e - d TAB RET*
-- Another one: [<example-dragon>] -> cute dragon *? t e x a m p l e - d TAB RET*
+- Generate strings from silly included example tables: [<example-dragon>] -> 3 ice dragons *(? t e x a m p l e - d TAB RET)*
+- Another one: [<example-dragon>] -> cute dragon *(? t e x a m p l e - d TAB RET)*
 
 (The variable decide-tables can be set up with the tables to generate
 strings from and it can include die-rolls and ranges as well to
