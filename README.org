@@ -10,7 +10,7 @@ echoed in the mini-buffer. The format is intended to make it possible to
 integrate them in a text being written with decide-mode making it easy to press
 ? followed by various other keys to quickly get some random result inserted in
 the buffer. A ? followed by space or enter will just insert the ? itself, so
-normally decide-mode will not interfer with your typing.
+normally decide-mode should not interfere with typing.
 
 ** Example Output
 This is what it can look like when typing a text
