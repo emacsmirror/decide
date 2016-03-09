@@ -666,3 +666,4 @@
 (define-key decide-mode-map (kbd "? SPC") 'decide-question-space)
 
 (provide 'decide)
+;;; decide.el ends here
