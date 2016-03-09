@@ -120,6 +120,8 @@
 ;; space or enter. (Or quote the ? key normally, ie C-q ?).
 ;;
 
+;;; Code:
+
 (defvar decide-mode-map (make-sparse-keymap)
   "Keymap for decide minor mode.")
 
