@@ -120,6 +120,8 @@
 ;; space or enter. (Or quote the ? key normally, ie C-q ?).
 ;;
 
+;;; Code:
+
 (defvar decide-mode-map (make-sparse-keymap)
   "Keymap for decide minor mode.")
 
@@ -666,3 +668,4 @@
 (define-key decide-mode-map (kbd "? SPC") 'decide-question-space)
 
 (provide 'decide)
+;;; decide.el ends here
