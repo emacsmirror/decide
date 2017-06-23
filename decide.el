@@ -433,13 +433,13 @@
            (decide-strings-to-numbers (list (match-string 1 s)
                                             (match-string 2 s)
                                             "0")))
-          ((string-match "^\\([1-9][0-9]*\\)d\\([fa]\\)\\([+-][1-9][0-9]*\\)"
+          ((string-match "^\\([1-9][0-9]*\\)d\\([a-zA-Z]+\\)\\([+-][1-9][0-9]*\\)"
                          s)
            (list (string-to-number (match-string 1 s))
                  (match-string 2 s)
                  (string-to-number (match-string 3 s))
                  ))
-          ((string-match "^\\([1-9][0-9]*\\)d\\([fa]\\)" s)
+          ((string-match "^\\([1-9][0-9]*\\)d\\([a-zA-Z]+\\)" s)
            (list (string-to-number (match-string 1 s))
                  (match-string 2 s)
                  0))
