@@ -2,7 +2,7 @@
 ;; Copyright 2016 Pelle Nilsson
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
-;; Version: 0.5
+;; Version: 0.6
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,8 +35,6 @@
 ;; ask for what roll to make, something like 2d6 or 3d10+2 or 2d12-1.
 ;; The default if nothing is input, or nothing that can be parsed
 ;; properly as a dice specification, 1d6 is rolled.
-;; Also understood are dA (or da) for average-dice (d6 numbered 2, 3, 3, 4, 4, 5)
-;; and dF (or df) for Fudge/FATE dice (d6 labeled +, +, 0, 0, -, -).
 ;; M-p and M-n can be used to navigate history to re-roll.
 ;; Rolling dice is bound to ? d when decide-mode is active.
 ;; Some common and less common die-rolls have their own key-bindings
@@ -54,6 +52,16 @@
 ;; ? 2 0 -> 1d20
 ;; ? % -> 1d100
 ;; ? D -> 2d6
+;;
+;; Custom dice can be defined in the decide-custom-dice alist. They must have a
+;; single uppercase letter names or they will not be found when parsing dice
+;; specifications to roll (they can be used with either upper or lower case when
+;; rolling dice though). By default it contains configuration for dA
+;; (average-dice, d6 numbered 2, 3, 3, 4, 4, 5) and dF (Fudge/FATE dice, d6
+;; labeled +, +, 0, 0, -, -). Each custom dice side has a string label and an
+;; optional value that is used (if it exists) to calculate the sum of rolling
+;; multiple dice of that type. There are some pre-defined key-bindings in
+;; decide-mode for the included custom dice:
 ;; ? f -> 4dF
 ;; ? a -> 1dA
 ;; ? A -> 2dA
@@ -119,7 +127,6 @@
 ;; To just type a question-mark (?) press ? immediately followed by
 ;; space or enter. (Or quote the ? key normally, ie C-q ?).
 ;;
-
 ;;; Code:
 
 (defvar decide-mode-map (make-sparse-keymap)
@@ -155,6 +162,18 @@
     ("example-dragon-prefix" . ("" "ice " "undead " "epic " "old "
                                 "semi-" "cute " "ugly ")))
   "Alist specifying tables used for the decide-from-table function.")
+
+(defvar decide-custom-dice
+  '(("F" . ((0 "0")
+            (-1 "-")
+            (1 "+")))
+    ("A" . ((2 "2")
+            (3 "3")
+            (3 "3")
+            (4 "4")
+            (4 "4")
+            (5 "5"))))
+  "Alist specifying custom dice for decide-roll-dice")
 
 (setq decide-for-me-dice
       (let ((ya "YES+")
@@ -358,27 +377,14 @@
 (defun decide-roll-custom-die (sides)
   (nth (random (length sides)) sides))
 
-(defun decide-roll-fudge-die ()
-  (decide-roll-custom-die '((0 "0")
-                            (-1 "-")
-                            (1 "+"))))
-
-(defun decide-roll-average-die ()
-  (decide-roll-custom-die '((2 "2")
-                            (3 "3")
-                            (3 "3")
-                            (4 "4")
-                            (4 "4")
-                            (5 "5"))))
-
 (defun decide-roll-number-die (faces)
   (let ((res (+ 1 (random faces))))
     (list res (format "%d" res))))
 
 (defun decide-roll-die (faces)
-  (cond ((equal faces "f") (decide-roll-fudge-die))
-        ((equal faces "a") (decide-roll-average-die))
-        (t (decide-roll-number-die faces))))
+  (let ((sides (cdr (assoc (upcase faces) decide-custom-dice))))
+    (if sides (decide-roll-custom-die sides)
+      (decide-roll-number-die faces))))
 
 (defun decide-roll-dice-result (nr faces)
   (if (= 0 nr)
