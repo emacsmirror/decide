@@ -175,20 +175,16 @@
     (nth (random (length die)) die)))
 
 (defun decide-for-me-result (name result)
-  (concatenate 'string
-               (if name
-                   (concatenate 'string "["
-                                name
-                                "] ")
-                 ""
-                 )
-               "-> "
-               result
-               "\n"))
+  (concat (if name
+            (concat "[" name "] ")
+            "")
+          "-> "
+          result
+          "\n"))
 
 (defun decide-insert (&rest ARGS)
   (if buffer-read-only
-      (minibuffer-message (apply (apply-partially 'concatenate 'string) ARGS))
+      (minibuffer-message (apply 'concat ARGS))
     (apply 'insert ARGS)))
 
 (defun decide-for-me-likely ()
@@ -216,7 +212,7 @@
     (decide-for-me-get :unlikely))))
 
 (defun decide-range-average (&rest results)
-  (floor (+ 0.5 (/ (apply '+ (map 'list 'float results))
+  (floor (+ 0.5 (/ (apply '+ (mapcar 'float results))
                    (length results)))))
 
 (defun decide-parse-range (s)
@@ -258,7 +254,7 @@
 
 (defun decide-from-range-get (from to fn draws)
   (apply fn
-         (map 'list 'decide-from-range-draw
+         (mapcar 'decide-from-range-draw
               (make-list draws (cons from to)))))
 
 (defun decide-from-range (from to fn draws)
@@ -281,11 +277,11 @@
 (defun decide-choose-from-table-list-part (part)
   (let ((parts (split-string part " ")))
     (mapconcat 'identity
-               (map 'list 'decide-choose-from-table parts) " ")))
+               (mapcar 'decide-choose-from-table parts) " ")))
 
 (defun decide-choose-from-table-list (choice)
   (mapconcat 'identity
-             (map 'list 'decide-choose-from-table-list-part
+             (mapcar 'decide-choose-from-table-list-part
                   (split-string choice "~")) ""))
 
 (defun decide-choose-from-table-choices (choices)
@@ -353,7 +349,7 @@
   (decide-random-choice "forward,left,right,back,up,down"))
 
 (defun decide-strings-to-numbers (numbers)
-  (map 'list 'string-to-number numbers))
+  (mapcar 'string-to-number numbers))
 
 (defun decide-roll-custom-die (sides)
   (nth (random (length sides)) sides))
@@ -387,15 +383,15 @@
           (decide-roll-dice-result (- nr 1) faces))))
 
 (defun decide-describe-roll (rolled)
-  (let ((first-described (format "%s" (second (first rolled)))))
+  (let ((first-described (format "%s" (cadr (car rolled)))))
     (if (= 1 (length rolled))
         first-described
       (format "%s %s"
               first-described
-              (decide-describe-roll (rest rolled))))))
+              (decide-describe-roll (cdr rolled))))))
 
 (defun decide-sum-dice-rolled (rolled mod)
-  (apply '+ (cons mod (map 'list 'first rolled))))
+  (apply '+ (cons mod (mapcar 'car rolled))))
 
 (defun decide-roll-dice-spec (nr faces mod)
   (let* ((rolled (decide-roll-dice-result nr faces))
@@ -411,7 +407,7 @@
   (let ((s (downcase spec-string)))
     (cond ((= 0 (length s)) "")
           ((equal "d" (substring s 0 1))
-           (concatenate 'string "1" s))
+           (concat "1" s))
           (t s))))
 
 (defun decide-make-dice-spec (spec-string)
