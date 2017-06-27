@@ -125,6 +125,7 @@
 (defvar decide-mode-map (make-sparse-keymap)
   "Keymap for decide minor mode.")
 
+;;;###autoload
 (define-minor-mode decide-mode
   "Minor mode for making  decisions.
 \\<decide-mode-map"
