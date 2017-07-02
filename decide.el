@@ -132,6 +132,7 @@
 (defvar decide-mode-map (make-sparse-keymap)
   "Keymap for decide minor mode.")
 
+;;;###autoload
 (define-minor-mode decide-mode
   "Minor mode for making  decisions.
 \\<decide-mode-map"
@@ -194,20 +195,16 @@
     (nth (random (length die)) die)))
 
 (defun decide-for-me-result (name result)
-  (concatenate 'string
-               (if name
-                   (concatenate 'string "["
-                                name
-                                "] ")
-                 ""
-                 )
-               "-> "
-               result
-               "\n"))
+  (concat (if name
+            (concat "[" name "] ")
+            "")
+          "-> "
+          result
+          "\n"))
 
 (defun decide-insert (&rest ARGS)
   (if buffer-read-only
-      (minibuffer-message (apply (apply-partially 'concatenate 'string) ARGS))
+      (minibuffer-message (apply 'concat ARGS))
     (apply 'insert ARGS)))
 
 (defun decide-for-me-likely ()
@@ -235,7 +232,7 @@
     (decide-for-me-get :unlikely))))
 
 (defun decide-range-average (&rest results)
-  (floor (+ 0.5 (/ (apply '+ (map 'list 'float results))
+  (floor (+ 0.5 (/ (apply '+ (mapcar 'float results))
                    (length results)))))
 
 (defun decide-parse-range (s)
@@ -277,7 +274,7 @@
 
 (defun decide-from-range-get (from to fn draws)
   (apply fn
-         (map 'list 'decide-from-range-draw
+         (mapcar 'decide-from-range-draw
               (make-list draws (cons from to)))))
 
 (defun decide-from-range (from to fn draws)
@@ -300,11 +297,11 @@
 (defun decide-choose-from-table-list-part (part)
   (let ((parts (split-string part " ")))
     (mapconcat 'identity
-               (map 'list 'decide-choose-from-table parts) " ")))
+               (mapcar 'decide-choose-from-table parts) " ")))
 
 (defun decide-choose-from-table-list (choice)
   (mapconcat 'identity
-             (map 'list 'decide-choose-from-table-list-part
+             (mapcar 'decide-choose-from-table-list-part
                   (split-string choice "~")) ""))
 
 (defun decide-choose-from-table-choices (choices)
@@ -372,7 +369,7 @@
   (decide-random-choice "forward,left,right,back,up,down"))
 
 (defun decide-strings-to-numbers (numbers)
-  (map 'list 'string-to-number numbers))
+  (mapcar 'string-to-number numbers))
 
 (defun decide-roll-custom-die (sides)
   (nth (random (length sides)) sides))
@@ -393,15 +390,15 @@
           (decide-roll-dice-result (- nr 1) faces))))
 
 (defun decide-describe-roll (rolled)
-  (let ((first-described (format "%s" (second (first rolled)))))
+  (let ((first-described (format "%s" (cadr (car rolled)))))
     (if (= 1 (length rolled))
         first-described
       (format "%s %s"
               first-described
-              (decide-describe-roll (rest rolled))))))
+              (decide-describe-roll (cdr rolled))))))
 
 (defun decide-sum-dice-rolled (rolled mod)
-  (apply '+ (cons mod (map 'list 'first rolled))))
+  (apply '+ (cons mod (mapcar 'car rolled))))
 
 (defun decide-roll-dice-spec (nr faces mod)
   (let* ((rolled (decide-roll-dice-result nr faces))
@@ -417,11 +414,11 @@
   (let ((s (downcase spec-string)))
     (cond ((= 0 (length s)) "")
           ((equal "d" (substring s 0 1))
-           (concatenate 'string "1" s))
+           (concat "1" s))
           (t s))))
 
 (defun decide-make-dice-spec (spec-string)
-  "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"f\" 0)"
+  "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"F\" 0)"
   (let ((s (decide-clean-up-dice-spec-string spec-string)))
     (cond ((string-match "^\\([1-9][0-9]*\\)d\\([1-9][0-9]*\\)\\([+-][1-9][0-9]*\\)"
                          s)
@@ -528,6 +525,32 @@
   (interactive)
   (decide-roll-dice "1d100"))
 
+(defun decide-find-last-ws ()
+  (save-excursion
+    (let ((p (search-backward-regexp "[\s\n(]")))
+      (if p (+ p 1) (point-min)))
+    )
+  )
+
+(defun decide-get-from-last-ws ()
+  (buffer-substring-no-properties (decide-find-last-ws) (point))
+)
+
+(defun decide-dwim-insert ()
+  "Do what I mean with last word."
+  (interactive)
+  (let* ((s (decide-get-from-last-ws))
+         (dice-spec (decide-make-dice-spec s))
+         (range-spec (decide-parse-range s))
+         )
+    (cond (dice-spec (progn
+                       (delete-backward-char (length s))
+                       (decide-roll-dice-insert dice-spec)))
+          (range-spec (progn
+                        (delete-backward-char (length s))
+                        (decide-random-range s)))
+          (t (decide-for-me-normal)))))
+
 (defun decide-question-return ()
   (interactive)
   (insert "?\n"))
@@ -540,7 +563,7 @@
 
 (define-key decide-mode-map (kbd "?") 'decide-prefix-map)
 
-(define-key decide-mode-map (kbd "? ?") 'decide-for-me-normal)
+(define-key decide-mode-map (kbd "? ?") 'decide-dwim-insert)
 (define-key decide-mode-map (kbd "? +") 'decide-for-me-likely)
 (define-key decide-mode-map (kbd "? -") 'decide-for-me-unlikely)
 
