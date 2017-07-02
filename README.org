@@ -56,6 +56,8 @@ kebindings in decide-mode.
 - Various minor fixes.
 ** 0.6.1 20170703
 - Cleaned up dice-parsing and improved error-handling.
+** 0.6.2 20170703
+- Fixed regression with parsing dice in tables.
 * Help
 Suggestions and bug-fixes are very much appreciated. This was
 my first attempt at writing a mode for emacs, and I have very
@@ -65,7 +67,7 @@ little experience with elisp (or any lisp) in general.
  Copyright 2016, 2017 Pelle Nilsson
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
- Version: 0.6.1
+ Version: 0.6.2
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
