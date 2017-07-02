@@ -63,6 +63,8 @@ up more complex texts.)
 - Various minor fixes.
 ** 0.6.1 20170703
 - Cleaned up dice-parsing and improved error-handling.
+** 0.6.2 20170703
+- Fixed regression with parsing dice in tables.
 ** 0.7 20170703
 - Do What I Mean (dice or range spec before ? ? in buffer)
 * Help
@@ -74,7 +76,11 @@ little experience with elisp (or any lisp) in general.
  Copyright 2016, 2017 Pelle Nilsson et al
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
+<<<<<<< HEAD
  Version: 0.7
+=======
+ Version: 0.6.2
+>>>>>>> 4cce30c... Version 0.6.2.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
