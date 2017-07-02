@@ -420,23 +420,14 @@
           (format "= %d" sum))
       (format "(%s) %+d = %d" rolled-description mod sum))))
 
-(defun decide-clean-up-dice-spec-string (spec-string)
-  (let ((s (downcase spec-string)))
-    (cond ((= 0 (length s)) "")
-          ((equal "d" (substring s 0 1))
-           (concat "1" s))
-          (t s))))
-
-(defun decide-make-dice-spec (spec-string)
+(defun decide-make-dice-spec (s)
   "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"f\" 0)"
-  (let ((s (decide-clean-up-dice-spec-string spec-string)))
-
-    (when (string-match
-           "^\\([1-9][0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
-           s)
-      (decide-strings-to-numbers (list (match-string 1 s)
-                                       (match-string 2 s)
-                                       (match-string 3 s))))))
+  (when (string-match
+         "^\\([1-9][0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
+         s)
+    (decide-strings-to-numbers (list (match-string 1 s)
+                                     (match-string 2 s)
+                                     (match-string 3 s)))))
 
 (defun decide-describe-dice-spec (spec)
   (let* ((mod (car (last spec)))
