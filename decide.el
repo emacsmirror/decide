@@ -55,8 +55,9 @@
 ;;
 ;; Custom dice can be defined in the decide-custom-dice alist. By default it
 ;; contains configuration for dA (average-dice, d6 numbered 2, 3, 3, 4, 4, 5)
-;; and dF (Fudge/FATE dice, d6 labeled +, +, 0, 0, -, -). Each type of custom
-;; dice must be given a name in uppercase. Each custom dice side has a string
+;; and dF (Fudge/FATE dice, d6 labeled +, +, 0, 0, -, -). Custom dice names
+;; are not case sensitive (avoid having dice with the same name only differing
+;; in case). Each custom dice side has a string
 ;; label and an optional value that is used (if it exists) to calculate the sum
 ;; of rolling multiple dice of that type. There are some pre-defined
 ;; key-bindings in decide-mode for the included custom dice:
@@ -173,8 +174,9 @@
             (4 "4")
             (4 "4")
             (5 "5"))))
-  "Alist specifying custom dice for decide-roll-dice")
-
+  "Alist specifying custom dice for decide-roll-dice. Keys are
+  the names used when rolling dice. They are case insensitive, so
+  avoid using names that only differ in case (e.g. Hi and HI).")
 (setq decide-for-me-dice
       (let ((ya "YES+")
             (y "YES")
@@ -378,7 +380,8 @@
     (list res (format "%d" res))))
 
 (defun decide-roll-die (faces)
-  (let ((sides (cdr (assoc (upcase faces) decide-custom-dice))))
+  (let ((sides (and (stringp faces)
+                    (cdr (assoc-string faces decide-custom-dice t)))))
     (if sides (decide-roll-custom-die sides)
       (decide-roll-number-die faces))))
 
