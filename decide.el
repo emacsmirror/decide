@@ -59,8 +59,11 @@
 ;; dice must be given a name in uppercase. Each custom dice side has a string
 ;; label and an optional value that is used (if it exists) to calculate the sum
 ;; of rolling multiple dice of that type. There are some pre-defined
-;; key-bindings in decide-mode for the included custom dice: ? f -> 4dF ? a ->
-;; 1dA ? A -> 2dA
+;; key-bindings in decide-mode for the included custom dice:
+;;
+;; ? f -> 4dF
+;; ? a -> 1dA
+;; ? A -> 2dA
 ;;
 ;; To pick a random number in any range press ? r (decide-random-range),
 ;; then input range to get number from, in one of the following formats:
