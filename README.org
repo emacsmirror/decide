@@ -12,6 +12,16 @@ integrate them in a text being written with decide-mode making it easy to press
 the buffer. A ? followed by space or enter will just insert the ? itself, so
 normally decide-mode should not interfere with typing.
 
+The default binding of ? ? (since version 0.7) is decide-dwim-insert, a function
+that looks in the buffer immediately before point and if it finds a dice
+or range specification there it will replace it with the result of rolling
+the dice or picking a random number from the range. If no dice or range
+is found it will fall back to the normal decide-for-me-normal function that
+outputs a simple YES or NO result.
+
+See the decide.el file itself for some documentation and a list of all the
+kebindings in decide-mode.
+
 ** Example Output
 This is what it can look like when typing a text
 in emacs with decide-mode enabled. All the functions
@@ -45,9 +55,6 @@ strings from and it can include die-rolls and ranges as well to
 insert random numbers, and refer to other tables to build
 up more complex texts.)
 
-See the decide.el file itself for some documentation and a list of all the
-kebindings in decide-mode.
-
 * Versions
 ** 0.5 20160306
 - First public version.
@@ -56,16 +63,18 @@ kebindings in decide-mode.
 - Various minor fixes.
 ** 0.6.1 20170703
 - Cleaned up dice-parsing and improved error-handling.
+** 0.7 20170703
+- Do What I Mean (dice or range spec before ? ? in buffer)
 * Help
 Suggestions and bug-fixes are very much appreciated. This was
 my first attempt at writing a mode for emacs, and I have very
 little experience with elisp (or any lisp) in general.
 
 * License
- Copyright 2016, 2017 Pelle Nilsson
+ Copyright 2016, 2017 Pelle Nilsson et al
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
- Version: 0.6.1
+ Version: 0.7
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
