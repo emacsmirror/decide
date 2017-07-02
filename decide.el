@@ -511,6 +511,32 @@
   (interactive)
   (decide-roll-dice "1d100"))
 
+(defun decide-find-last-ws ()
+  (save-excursion
+    (let ((p (search-backward-regexp "[\s\n(]")))
+      (if p (+ p 1) (point-min)))
+    )
+  )
+
+(defun decide-get-from-last-ws ()
+  (buffer-substring-no-properties (decide-find-last-ws) (point))
+)
+
+(defun decide-dwim-insert ()
+  "Do what I mean with last word."
+  (interactive)
+  (let* ((s (decide-get-from-last-ws))
+         (dice-spec (decide-make-dice-spec s))
+         (range-spec (decide-parse-range s))
+         )
+    (cond (dice-spec (progn
+                       (delete-backward-char (length s))
+                       (decide-roll-dice-insert dice-spec)))
+          (range-spec (progn
+                        (delete-backward-char (length s))
+                        (decide-random-range s)))
+          (t (decide-for-me-normal)))))
+
 (defun decide-question-return ()
   (interactive)
   (insert "?\n"))
@@ -523,7 +549,7 @@
 
 (define-key decide-mode-map (kbd "?") 'decide-prefix-map)
 
-(define-key decide-mode-map (kbd "? ?") 'decide-for-me-normal)
+(define-key decide-mode-map (kbd "? ?") 'decide-dwim-insert)
 (define-key decide-mode-map (kbd "? +") 'decide-for-me-likely)
 (define-key decide-mode-map (kbd "? -") 'decide-for-me-unlikely)
 
