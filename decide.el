@@ -1,8 +1,8 @@
 ;;; decide.el --- rolling dice and other random things
-;; Copyright 2016, 2017 Pelle Nilsson
+;; Copyright 2016, 2017 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
-;; Version: 0.6.2
+;; Version: 0.7
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
