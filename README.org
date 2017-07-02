@@ -54,10 +54,10 @@ my first attempt at writing a mode for emacs, and I have very
 little experience with elisp (or any lisp) in general.
 
 * License
- Copyright 2016 Pelle Nilsson
+ Copyright 2016, 2017 Pelle Nilsson
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
- Version: 0.5
+ Version: 0.6
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
