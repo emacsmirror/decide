@@ -370,7 +370,12 @@
   (decide-random-choice "forward,left,right,back,up,down"))
 
 (defun decide-strings-to-numbers (numbers)
-  (mapcar 'string-to-number numbers))
+  (mapcar (lambda (s)
+            (cond ((null s) 0)
+                  ((string-match "[0-9]+" s) (string-to-number s))
+                  ((equal "+" s) 0)
+                  ((equal "-" s) 0)
+                  (t s))) numbers))
 
 (defun decide-roll-custom-die (sides)
   (nth (random (length sides)) sides))
@@ -380,10 +385,13 @@
     (list res (format "%d" res))))
 
 (defun decide-roll-die (faces)
-  (let ((sides (and (stringp faces)
-                    (cdr (assoc-string faces decide-custom-dice t)))))
-    (if sides (decide-roll-custom-die sides)
-      (decide-roll-number-die faces))))
+  (cond ((stringp faces)
+         (let ((sides (cdr (assoc-string faces decide-custom-dice t))))
+           (if sides
+               (decide-roll-custom-die sides)
+             '(0 "?"))))
+        ((numberp faces)
+         (decide-roll-number-die faces))))
 
 (defun decide-roll-dice-result (nr faces)
   (if (= 0 nr)
@@ -422,27 +430,13 @@
 (defun decide-make-dice-spec (spec-string)
   "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"F\" 0)"
   (let ((s (decide-clean-up-dice-spec-string spec-string)))
-    (cond ((string-match "^\\([1-9][0-9]*\\)d\\([1-9][0-9]*\\)\\([+-][1-9][0-9]*\\)"
-                         s)
-           (decide-strings-to-numbers (list (match-string 1 s)
-                                            (match-string 2 s)
-                                            (match-string 3 s))))
-          ((string-match "^\\([1-9][0-9]*\\)d\\([1-9][0-9]*\\)"
-                         s)
-           (decide-strings-to-numbers (list (match-string 1 s)
-                                            (match-string 2 s)
-                                            "0")))
-          ((string-match "^\\([1-9][0-9]*\\)d\\([a-zA-Z]+\\)\\([+-][1-9][0-9]*\\)"
-                         s)
-           (list (string-to-number (match-string 1 s))
-                 (match-string 2 s)
-                 (string-to-number (match-string 3 s))
-                 ))
-          ((string-match "^\\([1-9][0-9]*\\)d\\([a-zA-Z]+\\)" s)
-           (list (string-to-number (match-string 1 s))
-                 (match-string 2 s)
-                 0))
-          (t nil))))
+
+    (when (string-match
+           "^\\([1-9][0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
+           s)
+      (decide-strings-to-numbers (list (match-string 1 s)
+                                       (match-string 2 s)
+                                       (match-string 3 s))))))
 
 (defun decide-describe-dice-spec (spec)
   (let* ((mod (car (last spec)))
