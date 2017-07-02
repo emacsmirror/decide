@@ -76,11 +76,7 @@ little experience with elisp (or any lisp) in general.
  Copyright 2016, 2017 Pelle Nilsson et al
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
-<<<<<<< HEAD
  Version: 0.7
-=======
- Version: 0.6.2
->>>>>>> 4cce30c... Version 0.6.2.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
