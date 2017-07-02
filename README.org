@@ -48,6 +48,13 @@ up more complex texts.)
 See the decide.el file itself for some documentation and a list of all the
 kebindings in decide-mode.
 
+* Versions
+** 0.5 20160306
+- First public version.
+** 0.6 20170702
+- Custom dice can be added in decide-custom-dice variable.
+- Various minor fixes.
+
 * Help
 Suggestions and bug-fixes are very much appreciated. This was
 my first attempt at writing a mode for emacs, and I have very
