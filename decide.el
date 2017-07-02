@@ -157,7 +157,6 @@
                          "example-dragon-prefix~dragon"
                          "2-3 example-dragon-prefix~dragons"
                          "example-dragon-prefix~dragon"
-                         "dragon named 2d~6"
                          "2d4~-headed dragon"
                          "1d3+1 dragons"))
     ("example-dragon-prefix" . ("" "ice " "undead " "epic " "old "
