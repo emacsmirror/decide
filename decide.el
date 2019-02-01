@@ -1,5 +1,5 @@
 ;;; decide.el --- rolling dice and other random things
-;; Copyright 2016, 2017 Pelle Nilsson et al
+;; Copyright 2016, 2017, 2019 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
 ;; Version: 0.7
@@ -115,6 +115,9 @@
 ;; A tilde (~) can be used anywhere in a table string to insert nothing, to
 ;; prevent the parser from recognizing some word, or to glue together words
 ;; or dice-specifiers without a space to separate them.
+;; A possible expansion for a table name can have a weight added to make
+;; it more likely to be choosen like ("dragon" . 3) (making it three times
+;; as likely to be choosen as an expansion that has no weight given).
 ;; The default-value for decide-tables contains some examples to hopefully
 ;; make all this a bit less confusing.
 ;;
