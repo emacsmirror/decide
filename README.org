@@ -67,13 +67,15 @@ up more complex texts.)
 - Fixed regression with parsing dice in tables.
 ** 0.7 20170703
 - Do What I Mean (dice or range spec before ? ? in buffer)
+** 0.8 TBD
+- Weighted decide-tables
 * Help
 Suggestions and bug-fixes are very much appreciated. This was
 my first attempt at writing a mode for emacs, and I have very
 little experience with elisp (or any lisp) in general.
 
 * License
- Copyright 2016, 2017 Pelle Nilsson et al
+ Copyright 2016, 2017, 2019 Pelle Nilsson et al
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
  Version: 0.7
