@@ -330,7 +330,8 @@
 
 (defun decide-choose-from-table (table-name)
   (let ((choices (cdr (assoc table-name decide-tables))))
-    (if choices (decide-choose-from-table-choices choices)
+    (if choices (decide-choose-from-table-list
+                 (decide-choose-from-table-choices choices))
       (let ((table-name-as-dice-spec (decide-make-dice-spec table-name))
             (table-name-as-range-spec (decide-parse-range table-name)))
         (cond (table-name-as-dice-spec
