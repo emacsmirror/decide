@@ -181,6 +181,14 @@
   "Alist specifying custom dice for decide-roll-dice. Keys are
   the names used when rolling dice. They are case insensitive, so
   avoid using names that only differ in case (e.g. Hi and HI).")
+
+(defvar decide-default-dice-faces 6
+  "The default faces of dice to use if left out of
+  a dice specification, for instance if rolling 3d.
+  Can be a number or a string matching one of the
+  custom names in decide-custom-dice."
+  )
+
 (setq decide-for-me-dice
       (let ((ya "YES+")
             (y "YES")
@@ -392,13 +400,12 @@
   (interactive)
   (decide-random-choice "forward,left,right,back,up,down"))
 
-(defun decide-strings-to-numbers (numbers)
-  (mapcar (lambda (s)
-            (cond ((null s) 0)
-                  ((string-match "[0-9]+" s) (string-to-number s))
-                  ((equal "+" s) 0)
-                  ((equal "-" s) 0)
-                  (t s))) numbers))
+(defun decide-string-to-number (s default)
+  (cond ((null s) default)
+        ((string-match "[0-9]+" s) (string-to-number s))
+        ((equal "+" s) 0)
+        ((equal "-" s) 0)
+        (t s)))
 
 (defun decide-roll-custom-die (sides)
   (nth (random (length sides)) sides))
@@ -406,6 +413,11 @@
 (defun decide-roll-number-die (faces)
   (let ((res (+ 1 (random faces))))
     (list res (format "%d" res))))
+
+(defun decide-roll-die (faces)
+  (if (and (stringp faces) (= (length faces) 0))
+      (decide-roll-die-nonempty decide-default-dice-faces)
+    (decide-roll-die-nonempty faces)))
 
 (defun decide-roll-die (faces)
   (cond ((stringp faces)
@@ -446,11 +458,12 @@
 (defun decide-make-dice-spec (s)
   "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"f\" 0)"
   (when (string-match
-         "^\\([1-9][0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
+         "^\\([1-9][0-9]*\\)?d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
          s)
-    (decide-strings-to-numbers (list (match-string 1 s)
-                                     (match-string 2 s)
-                                     (match-string 3 s)))))
+    (list (decide-string-to-number (match-string 1 s) 1)
+          (decide-string-to-number (match-string 2 s)
+                                   decide-default-dice-faces)
+          (decide-string-to-number (match-string 3 s) 0))))
 
 (defun decide-describe-dice-spec (spec)
   (let* ((mod (car (last spec)))
