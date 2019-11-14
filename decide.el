@@ -498,7 +498,7 @@
 (defun decide-make-dice-spec (s)
   "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"f\" 0)"
   (when (string-match
-         "^\\([1-9][0-9]*\\)?d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
+         "^\\([1-9][0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
          s)
     (list (decide-string-to-number (match-string 1 s) 1)
           (decide-string-to-number (match-string 2 s)
