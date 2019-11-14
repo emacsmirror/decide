@@ -368,6 +368,46 @@
    (decide-for-me-result (format "<%s>" table-name)
                          (decide-choose-from-table table-name))))
 
+(defun decide-table-parse-line (line)
+  (cond
+   ((string-match "^\s*#" line) nil)
+   ((string-match "^\\([0-9]+\\),\\(.*\\)" line)
+    (cons (match-string 2 line)
+          (string-to-number (match-string 1 line))
+          ))
+   (t line)))
+
+(defun decide-table-parse-lines (lines)
+  (if lines
+      (let ((parsed-first (decide-table-parse-line (car lines)))
+            (parsed-rest (decide-table-parse-lines (cdr lines)))
+            )
+        (if parsed-first
+            (cons parsed-first parsed-rest)
+          parsed-rest))
+    nil))
+
+(defun decide-table-read-buffer ()
+  (save-excursion
+    (beginning-of-buffer)
+    (decide-table-parse-lines (split-string (buffer-string) "\n" t))))
+
+(defun decide-table-load-file (filename)
+  (interactive "f")
+  (let ((basef (file-name-nondirectory filename)))
+    (with-temp-buffer
+      (insert-file-contents filename)
+      (push
+       (cons (file-name-sans-extension basef)
+             (decide-table-read-buffer))
+       decide-tables))))
+
+(defun decide-table-load-dir (dir)
+  (interactive "D")
+  (mapcar 'decide-table-load-file
+          (directory-files-recursively dir ""))
+  )
+
 (defun decide-whereto-compass-4 ()
   (interactive)
   (decide-random-choice "N,S,E,W"))
