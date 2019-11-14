@@ -2,7 +2,7 @@
 ;; Copyright 2016, 2017, 2019 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
-;; Version: 0.7
+;; Version: 0.8
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
