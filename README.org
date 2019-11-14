@@ -50,11 +50,13 @@ the example text below.
 - Generate strings from silly included example tables: [<example-dragon>] -> 3 ice dragons *(? t e x a m p l e - d TAB RET)*
 - Another one: [<example-dragon>] -> cute dragon *(? t e x a m p l e - d TAB RET)*
 
-(The variable decide-tables can be set up with the tables to generate
+(The variable /decide-tables/ can be set up with the tables to generate
 strings from and it can include die-rolls and ranges as well to
 insert random numbers, and refer to other tables to build
-up more complex texts.)
-
+up more complex texts. Tables can also be defined in simple text
+files that can be loaded using the functions /decide-table-load-dir/
+and /decide-table-load-file/. See /random-tables/ subdirectory
+for examples.)
 * Versions
 ** 0.5 20160306
 - First public version.
