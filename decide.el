@@ -121,6 +121,16 @@
 ;; The default-value for decide-tables contains some examples to hopefully
 ;; make all this a bit less confusing.
 ;;
+;; The functions decide-table-load-file and decide-table-load-dir
+;; can be used to load random tables from text files into
+;; the decide-tables variable. Each file contains a single table,
+;; with one possible substitution per line, in the same format
+;; as is used in decide-tables. Weights are set by prefixing
+;; a line with a number and a comma, with no whitespace before
+;; or after. The table name will be the same as the file's name,
+;; with any file extension (e.g. .txt) removed.
+;; The random-tables subdirectory contains example tables.
+;;
 ;; Example of globally binding a keyboard combination to roll dice:
 ;; (global-set-key (kbd "C-c r") 'decide-roll-dice)
 ;;
@@ -142,7 +152,7 @@
   :lighter " Decide")
 
 (defvar decide-tables
-  '(("card" . ("card-rank card-suit"))
+  '(("card" . ("[card-rank] [card-suit]"))
     ("card-suit" . ("Spades" "Hearts" "Diamonds" "Clubs"))
     ("card-rank" . ("Ace" "2" "3" "4" "5" "6" "7" "8" "9" "10"
                     "Jack" "Queen" "King"))
@@ -150,18 +160,18 @@
     ;; The following tables are all prefixed example- because
     ;; they are probably only useful to demonstrate how to
     ;; specify decide-tables.
-    ("example-monster" . ("1d6+1 orcs"
-                          "3d6+1 kobolds"
-                          "2<<<20 goblins"
-                          "2>>5 small goblins"
-                          "level 1--10 hero"
-                          "example-dragon"))
+    ("example-monster" . ("[1d6+1] orcs"
+                          "[3d6+1] kobolds"
+                          "[2<<<20] goblins"
+                          "[2>>5] small goblins"
+                          "level [1--10] hero"
+                          "[example-dragon]"))
     ("example-dragon" . (("dragon" . 3)
-                         "example-dragon-prefix~dragon"
-                         "2-3 example-dragon-prefix~dragons"
-                         "example-dragon-prefix~dragon"
-                         "2d4~-headed dragon"
-                         "1d3+1 dragons"))
+                         "[example-dragon-prefix]dragon"
+                         "[2-3] [example-dragon-prefix]dragons"
+                         "[example-dragon-prefix]dragon"
+                         "[2d4]-headed dragon"
+                         "[1d3+1] dragons"))
     ("example-dragon-prefix" . ("" "ice " "undead " "epic " "old "
                                 "semi-" "cute " "ugly ")))
   "Alist specifying tables used for the decide-from-table function.")
@@ -309,15 +319,17 @@
      (decide-for-me-result (format "(%s)" choices-string)
                            (nth (random (length choices)) choices)))))
 
-(defun decide-choose-from-table-list-part (part)
-  (let ((parts (split-string part " ")))
-    (mapconcat 'identity
-               (mapcar 'decide-choose-from-table parts) " ")))
+(defun decide-choose-for-table-list-part (part)
+  (let ((subparts (split-string part "\\]")))
+    (if (= (length subparts) 2)
+        (concat (decide-choose-from-table (nth 0 subparts))
+                (nth 1 subparts))
+      part)))
 
 (defun decide-choose-from-table-list (choice)
   (mapconcat 'identity
-             (mapcar 'decide-choose-from-table-list-part
-                  (split-string choice "~")) ""))
+             (mapcar 'decide-choose-for-table-list-part
+                     (split-string choice "\\[")) ""))
 
 (defun decide-weight-for-choice (choice)
   (if (listp choice) (cdr choice) 1))
@@ -361,9 +373,15 @@
               (t table-name))))))
 
 
+(defun decide-visible-tables ()
+  (remove-if
+   (lambda (x)
+     (string= "-" (substring (car x) 0 1)))
+   decide-tables))
+
 (defun decide-from-table (table-name)
   (interactive (list (completing-read "Table name: "
-                                      decide-tables
+                                      (decide-visible-tables)
                                       nil
                                       1)))
   (decide-insert
@@ -371,6 +389,7 @@
                          (decide-choose-from-table table-name))))
 
 (defun decide-table-parse-line (line)
+
   (cond
    ((string-match "^\s*#" line) nil)
    ((string-match "^\\([0-9]+\\),\\(.*\\)" line)
@@ -380,14 +399,9 @@
    (t line)))
 
 (defun decide-table-parse-lines (lines)
-  (if lines
-      (let ((parsed-first (decide-table-parse-line (car lines)))
-            (parsed-rest (decide-table-parse-lines (cdr lines)))
-            )
-        (if parsed-first
-            (cons parsed-first parsed-rest)
-          parsed-rest))
-    nil))
+  (remove-if-not
+   (lambda (x) (or (consp x) (stringp x)))
+   (mapcar 'decide-table-parse-line lines)))
 
 (defun decide-table-read-buffer ()
   (save-excursion
@@ -443,11 +457,14 @@
   (decide-random-choice "forward,left,right,back,up,down"))
 
 (defun decide-string-to-number (s default)
-  (cond ((null s) default)
-        ((string-match "[0-9]+" s) (string-to-number s))
-        ((equal "+" s) 0)
-        ((equal "-" s) 0)
-        (t s)))
+  (let ((n (if (stringp s)
+               (string-to-number s)
+             0)))
+    (cond ((null s) default)
+          ((> n 0) n)
+          ((string= "+" s) 0)
+          ((string= "-" s) 0)
+          (t s))))
 
 (defun decide-roll-custom-die (sides)
   (nth (random (length sides)) sides))

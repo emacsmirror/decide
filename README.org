@@ -75,6 +75,7 @@ for examples.)
 - Default faces for dice (decide-default-dice-faces variable, default 6)
 - Success dice (S) to roll Success or Fail
 - Dice-specification parser more forgiving
+- Tables with new format only parsing parts in square brackets
 * Help
 Suggestions and bug-fixes are very much appreciated. This was
 my first attempt at writing a mode for emacs, and I have very

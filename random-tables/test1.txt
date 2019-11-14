@@ -1,4 +1,0 @@
-abc
-3,xyz
-def
-ghi
