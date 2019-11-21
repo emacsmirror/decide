@@ -202,6 +202,8 @@
               (cons :unlikely (list y yb nb n na na)
                     ))))
 
+(require 'cl-lib)
+
 (defun decide-for-me-get (difficulty)
   "Get random decision for difficulty :likely, :normal, or :unlikely."
   (let ((die (cdr (assoc difficulty decide-for-me-dice))))
