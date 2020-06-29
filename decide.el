@@ -413,8 +413,7 @@
     (with-temp-buffer
       (insert-file-contents filename)
       (push
-       (cons (file-name-sans-extension basef)
-             (decide-table-read-buffer))
+       (decide-table-read-buffer)
        decide-tables))))
 
 (defun decide-table-load-dir (dir)
