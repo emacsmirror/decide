@@ -389,7 +389,6 @@
                          (decide-choose-from-table table-name))))
 
 (defun decide-table-parse-line (line)
-
   (cond
    ((string-match "^\s*#" line) nil)
    ((string-match "^\\([0-9]+\\),\\(.*\\)" line)
