@@ -34,7 +34,7 @@ and for 67% probability "? +" (/decide-for-me-likely/).
 
 When inserting a Yes or No using these functions there will sometimes, randomly,
 be a + or - inserted as well. Those can be ignored or interpreted as for
-instanece "and" and "or", for use in some RPG systems. The probability of a +
+instance "and" and "or", for use in some RPG systems. The probability of a +
 or - appearing will depend on which of the functions is called (see the
 confusingly named function /decide-for-me-dice/ for the exact probabilities).
 ** Die Rolls
@@ -103,7 +103,7 @@ bindings included.
 See the Random Tables below for a more powerful way of asking for a random
 choice. A random choice using "? c" is good for a quick ad-hoc choice as it does
 not require setting up a table with choices. Choices are saved in mini-buffer
-history, and thus easily available to make new smilar choices again until Emacs
+history, and thus easily available to make new similar choices again until Emacs
 is restarted, but for more permanent lists of things to draw from it is better
 to create a table or set up a key-binding to call /decide-random-choice/ (see
 the functions at the end of decide.el for how to do that easily).
@@ -126,7 +126,7 @@ Weights are set by prefixing a line with a number and a comma, with no
 white-space before or after. The first non-comment, non-empty line of the file
 is used as the name of the table, and must begin with a semicolon. No other
 line in the file should begin with a semicolon (note: this is to make it
-possible to extend the file-format alter to allow multiple tables in
+possible to extend the file-format later to allow multiple tables in
 the same file).
 
 To refer to another table from a phrase, include the name of that table
