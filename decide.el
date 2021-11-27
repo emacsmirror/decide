@@ -1,5 +1,5 @@
 ;;; decide.el --- rolling dice and other random things
-;; Copyright 2016, 2017, 2019 Pelle Nilsson et al
+;; Copyright 2016, 2017, 2019, 2021 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
 ;; Version: 0.8
@@ -91,8 +91,7 @@
 ;; ? c (decide-random-choice)
 ;; and input a comma-separated list of things to choose from.
 ;; There are also some pre-defined lists of choices that can be
-;; accessed with the following shortcuts (and it should be obvious from
-;; a quick look in decide.el how to define your own for frequently used lists!):
+;; accessed with the following shortcuts.
 ;;
 ;; ? w 4 -> decide-whereto-compass-4 (N,S,W,E)
 ;; ? w 6 -> decide-whereto-compass-6 (N,S,W,E,U,D)
@@ -104,22 +103,20 @@
 ;; ? W 6 -> decide-whereto-relative-6 (forward,left,right,back,up,down)
 ;;
 ;; It is also possible to pick random combinations of words taken from the
-;; variable decide-tables using ? t (decide-from-table). decide-table is
-;; an alist that gives lists of possible values for each 'table'. If one of
-;; the strings is the name of another table in the alist a random from that
-;; list will be substituted. A word that is a valid dice-spec
-;; is rolled with the result inserted. A word that is a valid range (as for
-;; decide-random-range) will result in a random value from that range
-;; being inserted. If a word matches the name of a
-;; table that table will be used to insert something at that position.
-;; A tilde (~) can be used anywhere in a table string to insert nothing, to
-;; prevent the parser from recognizing some word, or to glue together words
-;; or dice-specifiers without a space to separate them.
-;; A possible expansion for a table name can have a weight added to make
-;; it more likely to be choosen like ("dragon" . 3) (making it three times
-;; as likely to be choosen as an expansion that has no weight given).
-;; The default-value for decide-tables contains some examples to hopefully
-;; make all this a bit less confusing.
+;; variable decide-tables using ? t (decide-from-table). decide-table is an
+;; alist that gives lists of possible values for each 'table'. If the name of
+;; another table in the alist is given in square brackets a random value from
+;; that list will be substituted, and this is applied recursively (do not
+;; include a reference to a table from a table referred to from that table!). A
+;; valid dice-spec in square brackets is rolled with the result inserted. A
+;; valid range in square brackets (as for decide-random-range) will result in a
+;; random value from that range being inserted. If a word matches the name of a
+;; table that table will be used to insert something at that position. A
+;; possible expansion for a table name can have a weight added to make it more
+;; likely to be choosen like ("dragon" . 3) (making it three times as likely to
+;; be choosen as an expansion that has no weight given). The default-value for
+;; decide-tables contains some examples to hopefully make all this a bit less
+;; confusing.
 ;;
 ;; The functions decide-table-load-file and decide-table-load-dir
 ;; can be used to load random tables from text files into
@@ -155,25 +152,7 @@
   '(("card" . ("[card-rank] [card-suit]"))
     ("card-suit" . ("Spades" "Hearts" "Diamonds" "Clubs"))
     ("card-rank" . ("Ace" "2" "3" "4" "5" "6" "7" "8" "9" "10"
-                    "Jack" "Queen" "King"))
-
-    ;; The following tables are all prefixed example- because
-    ;; they are probably only useful to demonstrate how to
-    ;; specify decide-tables.
-    ("example-monster" . ("[1d6+1] orcs"
-                          "[3d6+1] kobolds"
-                          "[2<<<20] goblins"
-                          "[2>>5] small goblins"
-                          "level [1--10] hero"
-                          "[example-dragon]"))
-    ("example-dragon" . (("dragon" . 3)
-                         "[example-dragon-prefix]dragon"
-                         "[2-3] [example-dragon-prefix]dragons"
-                         "[example-dragon-prefix]dragon"
-                         "[2d4]-headed dragon"
-                         "[1d3+1] dragons"))
-    ("example-dragon-prefix" . ("" "ice " "undead " "epic " "old "
-                                "semi-" "cute " "ugly ")))
+                    "Jack" "Queen" "King")))
   "Alist specifying tables used for the decide-from-table function.")
 
 (defvar decide-custom-dice

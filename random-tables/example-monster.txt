@@ -1,0 +1,7 @@
+example-monster
+[1d6+1] orcs
+[3d6+1] kobolds
+[2<<<20] goblins
+[2>>5] small goblins
+level [1--10] hero
+[example-dragon]

@@ -1,0 +1,7 @@
+example-dragon
+3,dragon
+[-example-dragon-prefix]dragon
+[2-3] [-example-dragon-prefix]dragons
+[-example-dragon-prefix]dragon
+[2d4]-headed dragon
+[1d3+1] dragons

@@ -1,33 +1,171 @@
 * decide-mode.el
-Random decisions for emacs, with functions and a minor mode. Roll various types
-of dice, generate random numbers from ranges, or generate random text from
-tables. It was mostly inspired by tools and activities related to being
-a game master in role-playing games, but are in no way restricted to
-making random decisions in that context.
+Random decisions for Emacs, with functions and a minor mode. Roll and generate
+random numbers and text in a few other ways. It was mostly inspired by tools and
+activities related to being a game master in role-playing games or playing
+solitaire games, but can be used whenever you need a random decision.
 
 Results are inserted at point in active buffer if possible, otherwise only
-echoed in the mini-buffer. The format is intended to make it possible to
-integrate them in a text being written with decide-mode making it easy to press
+echoed in the mini-buffer. The default keyboard bindings for the minor-mode are
+intended to be convenient to trigger as part of typing regular text, by pressing
 ? followed by various other keys to quickly get some random result inserted in
-the buffer. A ? followed by space or enter will just insert the ? itself, so
-normally decide-mode should not interfere with typing.
+the buffer. A ? followed by space or enter will insert the ? itself and the
+following space or enter, so normally /decide-mode/ should not interfere with
+typing.
 
-The default binding of ? ? (since version 0.7) is decide-dwim-insert, a function
+The default binding of "? ?" (since version 0.7) is /decide-dwim-insert/, a function
 that looks in the buffer immediately before point and if it finds a dice
 or range specification there it will replace it with the result of rolling
 the dice or picking a random number from the range. If no dice or range
-is found it will fall back to the normal decide-for-me-normal function that
+is found it will fall back to the normal /decide-for-me-normal/ function that
 outputs a simple YES or NO result.
 
 See the decide.el file itself for some documentation and a list of all the
-kebindings in decide-mode.
+keybindings in /decide-mode/. There is an overview of important features
+below, but all the details and more features can be found in the source.
+** Yes or No
+The simplest function of /decide-mode/ is /decide-for-me-normal/ that will insert
+a /Yes/ or /No/ with equal probability. By default it is triggered by pressing
+"? ?", unless what is in the buffer just before point is a valid
+dice-specification or range (see descriptions of those below), in which case
+that will be used instead.
 
+To get a Yes only with 33% probability use "? -" (/decide-for-me-unlikely/)
+and for 67% probability "? +" (/decide-for-me-likely/).
+
+When inserting a Yes or No using these functions there will sometimes, randomly,
+be a + or - inserted as well. Those can be ignored or interpreted as for
+instanece "and" and "or", for use in some RPG systems. The probability of a +
+or - appearing will depend on which of the functions is called (see the
+confusingly named function /decide-for-me-dice/ for the exact probabilities).
+** Die Rolls
+Die-rolls are specified in common dice-notation, like 3d6 for rolling 3
+6-sided dice, or 2d4+1 to roll 2 4-sided dice and add 1 to the result.
+If the number of dice is not given (e.g. d10) it is assumed to be a single die.
+If the number of sides is not given (e.g. 2d) a standard d6 is assumed,
+but that can be configured in the variable /decide-default-dice-faces/.
+
+There are several ways to roll dice using /decide-mode/. The interactive
+function /decide-roll-dice/ will ask for a dice specification and then
+immediately insert the results of rolling that. The default keybinding "? d"
+will call that function. There are also some bindings that are "?" followed by
+one or more digits that will roll a single die immediately, e.g. "? 8" to roll
+1d8 or "? 2 0" to roll 1d20. See the list at the end of decide.el. A few special
+bindings are also included, like "? %" to 1d100 and "? f" to roll 4dF. Common
+1d6 can be rolled with "? 6", or 2d6 with "? D".
+
+Dice are also rolled when pressing "? ?" (/decide-dwim-insert/) if point is
+immediately preceded by what can be parsed as a valid dice-specification.
+
+It is also possible to use custom named dice that can have any number of sides
+that has any text on. Each side must still be given a value, as the sum of all
+rolled dice is always printed. Custom dice are specified in the variable
+/decide-custom-dice/ Included by default are dice F (for Fudge/Fate dice), S
+(results in Fail or Success), and A (for average dice, a 6-sided die labelled 2,
+3, 3, 4, 4, 5). To roll a custom die just use its name where the number of sides
+of a die would normally be, e.g. 4dF to roll 4 Fudge/Fate dice.
+
+Custom dice can be given names of any length, but case is ignored, so a dF is
+the same as a df. It is thus not possible to specify dice that have the same
+names only differing in case.
+** Random Ranges
+Ranges are a simpler way to specify a range of random numbers than to use dice.
+The default key-binding for ranges is "? r". The simplest range is just n-m,
+where n and m are integers (m must be positive) and m is greater than n. The
+inserted random number will be from n to m, inclusive. The range 1-6 is
+equivalent to rolling a standard 1d6.
+
+Ranges also support some special syntax to make some numbers in the range
+more likely. Including more dashes between the numbers makes results
+in the middle of the range more likely by effectively generating as many
+random values as the number of dashes and then picking the median of
+all those numbers. The range 10---20 for instance would insert a number
+from 10 to 20, but numbers close to 15 would be more likely. Using
+greater-than or lower-than characters instead between the numbers will
+tend towards higher or lower numbers, by generating as many numbers
+as indicated and then picking the highest or lowest, so 1>>6 is effectively
+like rolling 2d6 and picking the highest rolled. It makes no sense to use
+only a single < or >.
+
+The default binding for "? ?" will generate a random number from a range
+if point is immediately preceded by what can be parsed as a valid range
+specification.
+** Random Choices
+The function /decide-random-choice/, by default bound to "? c", asks for
+a comma-separated list of things and then inserts one of those chosen
+at random. A random direction can for instance be requested by pressing
+"? c" and then "N,S,W,E" or a random color with "red,blue,green".
+
+Some lists of choices are available at default key-bindings that
+can be seen at the end of the decide.el file. For instance the
+random directions in the last paragraph are available conveniently
+by pressing "? w 4" and there are several other similar bindings
+included.
+
+See the Random Tables below for a more powerful way of asking for
+a random choice, that also makes it possible to keep often use lists
+of things always available. A random choice using "? c" is good for
+a quick ad-hoc choice as it does not require setting up a table with
+choices. Choices are saved in mini-buffer history, and thus
+easily available to make new smilar choices again until Emacs is
+restarted the next time, but for more permanent lists of things
+to draw from it is better to create a table or set up a key-binding
+to call /decide-random-choice/ (see the functions at the end of
+decide.el for how to do that easily).
+** Random Tables
+The function /decide-from-table/, by default bound to "? t" when /decide-mode/ is
+enabled, inserts random text generated from the table in variable /decide-table/.
+The table can be set up using elisp, but since version 0.8 there is a new, simpler,
+way of setting up the tables by using plain-text files. Text is generated by
+starting from a given table and picking a random phrase from that table. Phrases
+can be weighted to make some more likely to be chosen. A phrase can also contain
+references to other tables, which will be substituted by a random phrase from
+that table. It is also possible to insert die-rolls and random numbers from
+a given range.
+
+The functions /decide-table-load-file/ and /decide-table-load-dir/ can be used to
+load random tables from text files into the /decide-tables/ variable. The latter
+recursively loads all files in a directory, while the former only loads a single
+file. Each file contains a single table, with one phrase per line. Weights are
+set by prefixing a line with a number and a comma, with no white-space before or
+after. The first line of the file is used as the name of the table.
+
+To refer to another table from a phrase, include the name of that table
+in brackets. Die-rolls can similarly be inserted by putting it in brackets.
+To get a simple random number in a range from n to m use [n-m], but
+it is also possible to use more advanced range-specifiers as described
+
+The *random-tables* sub-directory contains a few example tables. There are also
+The /decides-tables/ variable by default includes tables "card", "card-suit",
+and "card-rank" that can be used to draw random cards from an infinite deck. To
+load the other examples (all with names prefixed "example-") use the
+/decide-table-load-dir/ function. It makes sense to gather all table files in a
+directory and put a single call like
+/(decide-table-load-dir "~/.emacs.d/random-generators")/
+in your emacs init script to make sure
+all tables are always loaded.
+
+Tables with names that begin with a dash are hidden when choosing a table.
+Those tables can still be referred to from phrases in other tables, but
+are not included when asking the user for what table to use.
+
+Blank lines in files are ignored. If a blank phrase is needed (as in the
+/random-tables/example-dragon-prefix.txt/ file) a weight can be
+used alone on a line, just a number followed by a comma. Lines beginning
+with a # are comments and are ignored.
+
+The format of the table files is based on the format used by [[http://www.random-generator.com/][Abulafia (random-generator.com)]],
+that is a site containing thousands of random-generator tables, but lacking
+most of the advanced functions on that site, and also there is no support
+for multiple tables in the same file in /decide-mode/ to keep it simple,
+so converting many tables is not trivial, but many tables are just lists
+of weighted words and can be easily copy-pasted into a text-file for use
+with /decide-mode/.
 ** Example Output
 This is what it can look like when typing a text
-in emacs with decide-mode enabled. All the functions
-can be called outside of decide-mode as well of
+in Emacs with /decide-mode/ enabled. All the functions
+can be called outside of /decide-mode/ as well of
 course or bound to global shortcuts if you prefer.
-All the decide-mode shortcuts have ? as a prefix.
+All the /decide-mode/ shortcuts have ? as a prefix.
 The keys pressed have been awkwardly inserted in
 the example text below.
 
@@ -55,34 +193,41 @@ strings from and it can include die-rolls and ranges as well to
 insert random numbers, and refer to other tables to build
 up more complex texts. Tables can also be defined in simple text
 files that can be loaded using the functions /decide-table-load-dir/
-and /decide-table-load-file/. See /random-tables/ subdirectory
+and /decide-table-load-file/. See /random-tables/ sub-directory
 for examples.)
-* Versions
-** 0.5 20160306
-- First public version.
-** 0.6 20170702
-- Custom dice can be added in decide-custom-dice variable.
-- Various minor fixes.
-** 0.6.1 20170703
-- Cleaned up dice-parsing and improved error-handling.
-** 0.6.2 20170703
-- Fixed regression with parsing dice in tables.
-** 0.7 20170703
-- Do What I Mean (dice or range spec before ? ? in buffer)
-** 0.8 TBD
+** Use in snippets
+Not a feature of /decide-mode/ itself, but a hint that if you want for instance
+your yasnippets snippets to include random things it is easy to embed calls to
+various /decide-/ functions in yasnippet files. If you say have a random table
+set up to generate Victorian names (hint: you can easily make one based on [[http://www.random-generator.com/index.php?title=Victorian_Names&action=edit][the
+random Victorian names table on Abulafia]], but doing that is left as an exercise)
+you can embed function-calls in back-ticks,
+e.g. `(decide-choose-from-table "names-victorian")`.
+** Versions
+** 0.8 2021-11-27
 - Weighted decide-tables
 - Parse decide-tables from text-files
 - Default faces for dice (decide-default-dice-faces variable, default 6)
 - Success dice (S) to roll Success or Fail
 - Dice-specification parser more forgiving
 - Tables with new format only parsing parts in square brackets
-* Help
+** 0.7 2017-07-03
+- Do What I Mean (dice or range spec before ? ? in buffer)
+** 0.6.2 2017-07-03
+- Fixed regression with parsing dice in tables.
+** 0.6.1 2017-07-03
+- Cleaned up dice-parsing and improved error-handling.
+** 0.6 2017-07-02
+- Custom dice can be added in decide-custom-dice variable.
+- Various minor fixes.
+** 0.5 2016-03-06
+- First public version.
+** Help
 Suggestions and bug-fixes are very much appreciated. This was
-my first attempt at writing a mode for emacs, and I have very
+my first attempt at writing a mode for Emacs, and I have very
 little experience with elisp (or any lisp) in general.
-
-* License
- Copyright 2016, 2017, 2019 Pelle Nilsson et al
+** License
+ Copyright 2016, 2017, 2019, 2021 Pelle Nilsson et al
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
  Version: 0.8
