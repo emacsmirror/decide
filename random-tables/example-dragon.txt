@@ -1,4 +1,4 @@
-example-dragon
+;example-dragon
 3,dragon
 [-example-dragon-prefix]dragon
 [2-3] [-example-dragon-prefix]dragons

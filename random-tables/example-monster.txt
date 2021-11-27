@@ -1,4 +1,4 @@
-example-monster
+;example-monster
 [1d6+1] orcs
 [3d6+1] kobolds
 [2<<<20] goblins

@@ -124,9 +124,13 @@
 ;; with one possible substitution per line, in the same format
 ;; as is used in decide-tables. Weights are set by prefixing
 ;; a line with a number and a comma, with no whitespace before
-;; or after. The table name will be the same as the file's name,
-;; with any file extension (e.g. .txt) removed.
-;; The random-tables subdirectory contains example tables.
+;; or after. The name of the table is taken from the first
+;; non-empty, non-comment line, and that line must begin
+;; with a semicolon (to future-safe the format in case
+;; multiple tables in the same file is allowed eventually). No
+;; later lines in the file may begin with a semicolon.
+;; The random-tables subdirectory in the git-repository
+;; for decide-mode contains example tables.
 ;;
 ;; Example of globally binding a keyboard combination to roll dice:
 ;; (global-set-key (kbd "C-c r") 'decide-roll-dice)
@@ -386,14 +390,24 @@
     (beginning-of-buffer)
     (decide-table-parse-lines (split-string (buffer-string) "\n" t))))
 
+(defun decide-push-table (filename lines)
+  (let ((name-line (car lines))
+        (phrase-lines (cdr lines)))
+    (if (string-match "^\s*;" name-line)
+        (push
+         (cons
+          (string-trim (nth 1 (split-string name-line ";")))
+          phrase-lines)
+         decide-tables)
+        (error "First line in table-file must be name preceded by ; `%s'"
+               filename))))
+
 (defun decide-table-load-file (filename)
   (interactive "f")
-  (let ((basef (file-name-nondirectory filename)))
-    (with-temp-buffer
-      (insert-file-contents filename)
-      (push
-       (decide-table-read-buffer)
-       decide-tables))))
+  (with-temp-buffer
+    (insert-file-contents filename)
+    (decide-push-table filename
+     (decide-table-read-buffer))))
 
 (defun decide-table-load-dir (dir)
   (interactive "D")

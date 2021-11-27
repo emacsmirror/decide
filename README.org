@@ -95,22 +95,18 @@ a comma-separated list of things and then inserts one of those chosen
 at random. A random direction can for instance be requested by pressing
 "? c" and then "N,S,W,E" or a random color with "red,blue,green".
 
-Some lists of choices are available at default key-bindings that
-can be seen at the end of the decide.el file. For instance the
-random directions in the last paragraph are available conveniently
-by pressing "? w 4" and there are several other similar bindings
-included.
+Some lists of choices are available at default key-bindings that can be seen at
+the end of the decide.el file. For instance the random directions in the last
+paragraph are available by pressing "? w 4" and there are several other similar
+bindings included.
 
-See the Random Tables below for a more powerful way of asking for
-a random choice, that also makes it possible to keep often use lists
-of things always available. A random choice using "? c" is good for
-a quick ad-hoc choice as it does not require setting up a table with
-choices. Choices are saved in mini-buffer history, and thus
-easily available to make new smilar choices again until Emacs is
-restarted the next time, but for more permanent lists of things
-to draw from it is better to create a table or set up a key-binding
-to call /decide-random-choice/ (see the functions at the end of
-decide.el for how to do that easily).
+See the Random Tables below for a more powerful way of asking for a random
+choice. A random choice using "? c" is good for a quick ad-hoc choice as it does
+not require setting up a table with choices. Choices are saved in mini-buffer
+history, and thus easily available to make new smilar choices again until Emacs
+is restarted, but for more permanent lists of things to draw from it is better
+to create a table or set up a key-binding to call /decide-random-choice/ (see
+the functions at the end of decide.el for how to do that easily).
 ** Random Tables
 The function /decide-from-table/, by default bound to "? t" when /decide-mode/ is
 enabled, inserts random text generated from the table in variable /decide-table/.
@@ -122,12 +118,16 @@ references to other tables, which will be substituted by a random phrase from
 that table. It is also possible to insert die-rolls and random numbers from
 a given range.
 
-The functions /decide-table-load-file/ and /decide-table-load-dir/ can be used to
-load random tables from text files into the /decide-tables/ variable. The latter
-recursively loads all files in a directory, while the former only loads a single
-file. Each file contains a single table, with one phrase per line. Weights are
-set by prefixing a line with a number and a comma, with no white-space before or
-after. The first line of the file is used as the name of the table.
+The functions /decide-table-load-file/ and /decide-table-load-dir/ can be used
+to load random tables from text files into the /decide-tables/ variable. The
+latter recursively loads all files in a directory, while the former only loads a
+single file. Each file contains a single table, with one phrase per line.
+Weights are set by prefixing a line with a number and a comma, with no
+white-space before or after. The first non-comment, non-empty line of the file
+is used as the name of the table, and must begin with a semicolon. No other
+line in the file may begin with a semicolon (note: this is to make it
+possible to extend the file-format alter to allow multiple tables in
+the same file).
 
 To refer to another table from a phrase, include the name of that table
 in brackets. Die-rolls can similarly be inserted by putting it in brackets.
@@ -156,10 +156,7 @@ with a # are comments and are ignored.
 The format of the table files is based on the format used by [[http://www.random-generator.com/][Abulafia (random-generator.com)]],
 that is a site containing thousands of random-generator tables, but lacking
 most of the advanced functions on that site, and also there is no support
-for multiple tables in the same file in /decide-mode/ to keep it simple,
-so converting many tables is not trivial, but many tables are just lists
-of weighted words and can be easily copy-pasted into a text-file for use
-with /decide-mode/.
+for multiple tables in the same file in /decide-mode/ (yet?).
 ** Example Output
 This is what it can look like when typing a text
 in Emacs with /decide-mode/ enabled. All the functions
