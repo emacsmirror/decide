@@ -1,8 +1,8 @@
 * decide-mode.el
-Random decisions for Emacs, with functions and a minor mode. Roll and generate
-random numbers and text in a few other ways. It was mostly inspired by tools and
-activities related to being a game master in role-playing games or playing
-solitaire games, but can be used whenever you need a random decision.
+Random decisions for Emacs, with functions and a minor mode. Roll dice and
+generate random numbers and text in a few other ways. Mostly inspired by
+tools and activities related to being a game master in role-playing games or
+playing solitaire games, but may be useful beyond that.
 
 Results are inserted at point in active buffer if possible, otherwise only
 echoed in the mini-buffer. The default keyboard bindings for the minor-mode are
@@ -125,7 +125,7 @@ single file. Each file contains a single table, with one phrase per line.
 Weights are set by prefixing a line with a number and a comma, with no
 white-space before or after. The first non-comment, non-empty line of the file
 is used as the name of the table, and must begin with a semicolon. No other
-line in the file may begin with a semicolon (note: this is to make it
+line in the file should begin with a semicolon (note: this is to make it
 possible to extend the file-format alter to allow multiple tables in
 the same file).
 
@@ -134,15 +134,33 @@ in brackets. Die-rolls can similarly be inserted by putting it in brackets.
 To get a simple random number in a range from n to m use [n-m], but
 it is also possible to use more advanced range-specifiers as described
 
-The *random-tables* sub-directory contains a few example tables. There are also
+A simple table to generate a primary color, with green being twice
+as likely to be chosen could look like this:
+#+BEGIN_EXAMPLE
+;primary-color
+red
+2,green
+blue
+#+END_EXAMPLE
+
+The following table in another file refers to
+the previous table, and it also makes use of both
+a random range and a die-roll, where one of the
+phrases will be used four times as often as the other:
+#+BEGIN_EXAMPLE
+;paint-buckets
+4,[2-4] buckets of [primary-color] paint
+[1d3+2] empty paint buckets
+#+END_EXAMPLE
+
+The *random-tables* sub-directory contains a few example tables.
 The /decides-tables/ variable by default includes tables "card", "card-suit",
 and "card-rank" that can be used to draw random cards from an infinite deck. To
 load the other examples (all with names prefixed "example-") use the
 /decide-table-load-dir/ function. It makes sense to gather all table files in a
 directory and put a single call like
 /(decide-table-load-dir "~/.emacs.d/random-generators")/
-in your emacs init script to make sure
-all tables are always loaded.
+in emacs' init script to make sure all tables are always loaded.
 
 Tables with names that begin with a dash are hidden when choosing a table.
 Those tables can still be referred to from phrases in other tables, but
@@ -161,7 +179,7 @@ for multiple tables in the same file in /decide-mode/ (yet?).
 This is what it can look like when typing a text
 in Emacs with /decide-mode/ enabled. All the functions
 can be called outside of /decide-mode/ as well of
-course or bound to global shortcuts if you prefer.
+course or bound globally.
 All the /decide-mode/ shortcuts have ? as a prefix.
 The keys pressed have been awkwardly inserted in
 the example text below.
@@ -170,13 +188,13 @@ the example text below.
 - Roll dice: [2d6] -> (5 1) = 6 *(? D)*
 - Roll dice with modifier: [2d6+1] -> (5 3) +1 = 9 *(? d 2 d 6 + 1 RET)*
 - Roll more unusual dice, like FATE/Fudge dice: [4dF] -> (- 0 + +) = 1 *(? F)*
-- There are several special shortcuts for dice to save you some typing: [1d20] -> = 20 *(? 2 0)*
+- There are several special shortcuts for dice to save some typing: [1d20] -> = 20 *(? 2 0)*
 - Draw a cards: [<card>] -> 2 Clubs *(? t c a r d RET)*
 - Pick a number from a range: [1-10] -> 5 *(? r 1 - 1 0 RET)*
 - Pick a number from a range, but lower numbers more likely: [1-10 (lowest of 2)] -> 4 *(? r 1 < < 1 0 RET)*
 - Make lower numbers even more likely by adding more signs: [1-10 (lowest of 4)] -> 1 *(? r 1 < < < < 1 0 RET)*
 - Of course it works to make higher numbers more likely as well: [1-10 (highest of 3)] -> 9 *(? r 1 > > > 1 0 RET)*
-- And you can make numbers closer to the center of the range: [1-10 (average of 3)] -> 4 *(? r 1 - - - 1 0 RET)*
+- Numbers more likely closer to the center of the range: [1-10 (average of 3)] -> 4 *(? r 1 - - - 1 0 RET)*
 - Random directions:
 - [(N,S,E,W)] -> N *(? w 4)*
 - [(N,S,E,W,NE,NW,SE,SW)] -> NW *(? w 8)*
@@ -192,16 +210,17 @@ up more complex texts. Tables can also be defined in simple text
 files that can be loaded using the functions /decide-table-load-dir/
 and /decide-table-load-file/. See /random-tables/ sub-directory
 for examples.)
-** Use in snippets
-Not a feature of /decide-mode/ itself, but a hint that if you want for instance
-your yasnippets snippets to include random things it is easy to embed calls to
-various /decide-/ functions in yasnippet files. If you say have a random table
+** Use in yasnippets
+Not a feature of /decide-mode/ itself, but it is easy to embed calls to
+various /decide-/ functions in yasnippet files. A random table
 set up to generate Victorian names (hint: you can easily make one based on [[http://www.random-generator.com/index.php?title=Victorian_Names&action=edit][the
 random Victorian names table on Abulafia]], but doing that is left as an exercise)
-you can embed function-calls in back-ticks,
-e.g. `(decide-choose-from-table "names-victorian")`.
+can be used in a yasnippet snippet like this:
+#+BEGIN_EXAMPLE
+`(decide-choose-from-table "names-victorian")`.
+#+END_EXAMPLE
 ** Versions
-** 0.8 2021-11-27
+** 0.8 2021-11-28
 - Weighted decide-tables
 - Parse decide-tables from text-files
 - Default faces for dice (decide-default-dice-faces variable, default 6)

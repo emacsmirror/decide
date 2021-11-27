@@ -1,0 +1,3 @@
+;example-paint-buckets
+4,[2-4] buckets of [example-primary-color] paint
+[1d3+2] empty paint buckets
