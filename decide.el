@@ -297,9 +297,9 @@
 
 (defun decide-random-choice (choices-string)
   (interactive "sRandom choice from (comma-separated choices): ")
-  (let ((choices (split-string choices-string ",")))
+  (let ((choices (mapcar 'string-trim (split-string choices-string ","))))
     (decide-insert
-     (decide-for-me-result (format "(%s)" choices-string)
+     (decide-for-me-result (format "(%s)" (mapconcat 'identity choices ", "))
                            (nth (random (length choices)) choices)))))
 
 (defun decide-choose-for-table-list-part (part)
