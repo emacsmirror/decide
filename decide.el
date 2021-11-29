@@ -394,13 +394,12 @@
   (let ((name-line (car lines))
         (phrase-lines (cdr lines)))
     (if (string-match "^\s*;" name-line)
-        (push
-         (cons
-          (string-trim (nth 1 (split-string name-line ";")))
-          phrase-lines)
-         decide-tables)
-        (error "First line in table-file must be name preceded by ; `%s'"
-               filename))))
+        (let ((table-name (string-trim (nth 1 (split-string name-line ";")))))
+          (push
+           (cons table-name phrase-lines)
+           decide-tables))
+      (error "First line in table-file must be name preceded by ; `%s'"
+             filename))))
 
 (defun decide-table-load-file (filename)
   (interactive "f")
