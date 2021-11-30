@@ -382,10 +382,15 @@
                                    table-name-as-range-spec)))
               (t table-name))))))
 
+(defun decide-visible-tables ()
+  (remove-if
+   (lambda (x)
+     (string-match "[.]" (car x)))
+   decide-tables))
 
 (defun decide-from-table (table-name)
   (interactive (list (completing-read "Table name: "
-                                      decide-tables
+                                      (decide-visible-tables)
                                       nil
                                       1)))
   (decide-insert
