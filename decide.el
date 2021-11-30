@@ -383,15 +383,9 @@
               (t table-name))))))
 
 
-(defun decide-visible-tables ()
-  (remove-if
-   (lambda (x)
-     (string= "-" (substring (car x) 0 1)))
-   decide-tables))
-
 (defun decide-from-table (table-name)
   (interactive (list (completing-read "Table name: "
-                                      (decide-visible-tables)
+                                      decide-tables
                                       nil
                                       1)))
   (decide-insert

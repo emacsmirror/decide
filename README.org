@@ -168,10 +168,6 @@ directory and put a single call like
 /(decide-table-load-dir "~/.emacs.d/random-generators")/
 in emacs' init script to make sure all tables are always loaded.
 
-Tables with names that begin with a dash are hidden when choosing a table.
-Those tables can still be referred to from phrases in other tables, but
-are not included when asking the user for what table to use.
-
 Blank lines in files are ignored. If a blank phrase is needed (as in the
 /random-tables/example-dragon-prefix.txt/ file) a weight can be
 used alone on a line, just a number followed by a comma. Lines beginning
@@ -228,6 +224,7 @@ can be used in a yasnippet snippet like this:
 ** Versions
 ** 0.9 TBD
 - Multiple tables in the same file
+- Tables with name beginning with dash no longer hidden
 ** 0.8 2021-11-28
 - Weighted decide-tables
 - Parse decide-tables from text-files
