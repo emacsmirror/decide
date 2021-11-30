@@ -1,4 +1,5 @@
-;example-primary-color
+;main
 red
 2,green
 blue
+yellow

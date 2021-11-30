@@ -123,16 +123,22 @@ to load random tables from text files into the /decide-tables/ variable. The
 latter recursively loads all files in a directory, while the former only loads a
 single file. Each file contains a single table, with one phrase per line.
 Weights are set by prefixing a line with a number and a comma, with no
-white-space before or after. The first non-comment, non-empty line of the file
-is used as the name of the table, and must begin with a semicolon. No other
-line in the file should begin with a semicolon (note: this is to make it
-possible to extend the file-format later to allow multiple tables in
-the same file).
+white-space before or after.
+
+A line that begins with a semicolon begins a new table, and the name of the
+table is the text on the line after the semicolon. As a special case if
+the name is /main/ (case-insensitie match) instead the name of the file
+(sans extension) will be used for that table.
 
 To refer to another table from a phrase, include the name of that table
 in brackets. Die-rolls can similarly be inserted by putting it in brackets.
 To get a simple random number in a range from n to m use [n-m], but
 it is also possible to use more advanced range-specifiers as described
+
+References to other tables are first searched for in the same file.
+If no table matches in the file all file-names are searched instead.
+A name like /fff.ttt/ can be used for table /ttt/ that was declared in
+file /fff/.
 
 A simple table to generate a primary color, with green being twice
 as likely to be chosen could look like this:
@@ -154,8 +160,8 @@ phrases will be used four times as often as the other:
 #+END_EXAMPLE
 
 The *random-tables* sub-directory contains a few example tables.
-The /decides-tables/ variable by default includes tables "card", "card-suit",
-and "card-rank" that can be used to draw random cards from an infinite deck. To
+The /decides-tables/ variable by default includes tables "card", "card.suit",
+and "card.rank" that can be used to draw random cards from an infinite deck. To
 load the other examples (all with names prefixed "example-") use the
 /decide-table-load-dir/ function. It makes sense to gather all table files in a
 directory and put a single call like
@@ -220,6 +226,8 @@ can be used in a yasnippet snippet like this:
 `(decide-choose-from-table "names-victorian")`.
 #+END_EXAMPLE
 ** Versions
+** 0.9 TBD
+- Multiple tables in the same file
 ** 0.8 2021-11-28
 - Weighted decide-tables
 - Parse decide-tables from text-files

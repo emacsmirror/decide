@@ -1,9 +1,0 @@
-;-example-dragon-prefix
-1,
-ice 
-undead 
-epic 
-old 
-semi-
-cute 
-ugly 

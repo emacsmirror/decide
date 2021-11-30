@@ -1,7 +1,23 @@
-;example-dragon
+;main
 3,dragon
-[-example-dragon-prefix]dragon
-[2-3] [-example-dragon-prefix]dragons
-[-example-dragon-prefix]dragon
+[prefix]dragon
+[2-3] [prefix]dragons
+[prefix]dragon
 [2d4]-headed dragon
 [1d3+1] dragons
+
+;prefix
+1,
+ice 
+undead 
+epic 
+old 
+semi-
+cute 
+[example-primary-color] 
+ugly 
+
+
+
+
+

@@ -2,7 +2,7 @@
 ;; Copyright 2016, 2017, 2019, 2021 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
-;; Version: 0.8
+;; Version: 0.9
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -120,17 +120,27 @@
 ;;
 ;; The functions decide-table-load-file and decide-table-load-dir
 ;; can be used to load random tables from text files into
-;; the decide-tables variable. Each file contains a single table,
+;; the decide-tables variable. Each file contains one or more tables
 ;; with one possible substitution per line, in the same format
 ;; as is used in decide-tables. Weights are set by prefixing
 ;; a line with a number and a comma, with no whitespace before
-;; or after. The name of the table is taken from the first
-;; non-empty, non-comment line, and that line must begin
-;; with a semicolon (to future-safe the format in case
-;; multiple tables in the same file is allowed eventually). No
-;; later lines in the file may begin with a semicolon.
+;; or after. A line that begins with a semicolon marks
+;; the beginning of a new table, and the text on that
+;; line after the semicolon is the name of the table.
+;; If a table is named MAIN (case-insensitive) it
+;; will take its name from the file (sans extension).
 ;; The random-tables subdirectory in the git-repository
 ;; for decide-mode contains example tables.
+;;
+;; References (in brackets) to other tables will first match
+;; tables defined in the same file. If that fails it will look
+;; for other files that match the table-name.
+;; It is possible to refer to tables inside of other files by
+;; using table-name combining the file-name (sans extension)
+;; with the name of the table within that file, joined by
+;; a period (.) (e.g. example-dragon.prefix to refer to the
+;; prefix table in random-tables/example-dragon.txt.
+;;
 ;;
 ;; Example of globally binding a keyboard combination to roll dice:
 ;; (global-set-key (kbd "C-c r") 'decide-roll-dice)
@@ -153,9 +163,9 @@
   :lighter " Decide")
 
 (defvar decide-tables
-  '(("card" . ("[card-rank] [card-suit]"))
-    ("card-suit" . ("Spades" "Hearts" "Diamonds" "Clubs"))
-    ("card-rank" . ("Ace" "2" "3" "4" "5" "6" "7" "8" "9" "10"
+  '(("card" . ("[card.rank] [card.suit]"))
+    ("card.suit" . ("Spades" "Hearts" "Diamonds" "Clubs"))
+    ("card.rank" . ("Ace" "2" "3" "4" "5" "6" "7" "8" "9" "10"
                     "Jack" "Queen" "King")))
   "Alist specifying tables used for the decide-from-table function.")
 
@@ -302,16 +312,33 @@
      (decide-for-me-result (format "(%s)" (mapconcat 'identity choices ", "))
                            (nth (random (length choices)) choices)))))
 
-(defun decide-choose-for-table-list-part (part)
+(defun decide-table-normalize-name (top-table-name table-name)
+  (let ((parts (split-string table-name "[.]")))
+    (if (> (length parts) 1)
+        table-name
+      (concat top-table-name "." table-name))))
+
+(defun decide-table-top-table-name (table-name)
+  (car (split-string table-name "[.]")))
+
+(defun decide-table-assoc (top-table-name table-name)
+  (or (assoc (decide-table-normalize-name top-table-name table-name)
+             decide-tables)
+      (assoc table-name decide-tables)))
+
+(defun decide-choose-for-table-list-part (top-table-name part)
   (let ((subparts (split-string part "\\]")))
     (if (= (length subparts) 2)
-        (concat (decide-choose-from-table (nth 0 subparts))
+        (concat (decide-choose-from-table top-table-name
+                                          (nth 0 subparts))
                 (nth 1 subparts))
       part)))
 
-(defun decide-choose-from-table-list (choice)
+(defun decide-choose-from-table-list (top-table-name choice)
   (mapconcat 'identity
-             (mapcar 'decide-choose-for-table-list-part
+             (mapcar (function (lambda (part)
+                                 (decide-choose-for-table-list-part
+                                  top-table-name part)))
                      (split-string choice "\\[")) ""))
 
 (defun decide-weight-for-choice (choice)
@@ -325,8 +352,6 @@
    (lambda (s v) (+ s (decide-weight-for-choice v)))
    choices 0))
 
-;; (decide-table-sum '("a" "b" ("c" . 10) "d"))
-
 (defun decide-choose-from-table-choices (choices)
   (let* ((max (decide-table-sum choices))
          (roll (decide-from-range-draw (cons 0 max)))
@@ -338,10 +363,12 @@
              until (< roll sum)
              finally return e)))
 
-(defun decide-choose-from-table (table-name)
-  (let ((choices (cdr (assoc table-name decide-tables))))
-    (if choices (decide-choose-from-table-list
-                 (decide-choose-from-table-choices choices))
+(defun decide-choose-from-table (top-table-name table-name)
+  (let ((found-table (decide-table-assoc top-table-name table-name)))
+    (if found-table (decide-choose-from-table-list
+                     (decide-table-top-table-name (car found-table))
+                     (decide-choose-from-table-choices
+                      (cdr found-table)))
       (let ((table-name-as-dice-spec (decide-make-dice-spec table-name))
             (table-name-as-range-spec (decide-parse-range table-name)))
         (cond (table-name-as-dice-spec
@@ -369,7 +396,7 @@
                                       1)))
   (decide-insert
    (decide-for-me-result (format "<%s>" table-name)
-                         (decide-choose-from-table table-name))))
+                         (decide-choose-from-table table-name table-name))))
 
 (defun decide-table-parse-line (line)
   (cond
@@ -390,29 +417,53 @@
     (beginning-of-buffer)
     (decide-table-parse-lines (split-string (buffer-string) "\n" t))))
 
-(defun decide-push-table (filename lines)
-  (let ((name-line (car lines))
-        (phrase-lines (cdr lines)))
+(defun decide-make-table-name (file-name name)
+  (let ((main-name (file-name-sans-extension
+                    (file-name-nondirectory file-name))))
+    (if (string= (downcase name) "main")
+        main-name
+      (concat main-name "." name))))
+
+(defun decide-push-table (file-name lines)
+  (let ((name-line (car lines)))
     (if (string-match "^\s*;" name-line)
-        (let ((table-name (string-trim (nth 1 (split-string name-line ";")))))
+        (let ((table-name (decide-make-table-name
+                           file-name
+                           (string-trim (nth 1 (split-string name-line ";")))))
+              (phrase-lines (cdr lines)))
           (push
            (cons table-name phrase-lines)
            decide-tables))
-      (error "First line in table-file must be name preceded by ; `%s'"
-             filename))))
+      (error "First line in table must begin with ; `%s'"
+             file-name))))
 
-(defun decide-table-load-file (filename)
+(defun decide-push-table-here (file-name begin end)
+  (decide-push-table
+   file-name
+   (decide-table-parse-lines
+    (split-string (buffer-substring-no-properties begin end) "\n" t))))
+
+(defun decide-table-load-rest-of-file (file-name)
+  (let ((begin (line-beginning-position)))
+    (if (re-search-forward "^;" nil 1)
+        (progn (decide-push-table-here file-name
+                                       begin (line-beginning-position))
+               (decide-table-load-rest-of-file file-name))
+      (decide-push-table-here file-name
+                              begin (line-beginning-position)))))
+
+(defun decide-table-load-file (file-name)
   (interactive "f")
   (with-temp-buffer
-    (insert-file-contents filename)
-    (decide-push-table filename
-     (decide-table-read-buffer))))
+    (insert-file-contents file-name)
+    (if (re-search-forward "^;" nil 2)
+        (decide-table-load-rest-of-file file-name)
+      (error "Found no table in file %s" file-name))))
 
 (defun decide-table-load-dir (dir)
   (interactive "D")
   (mapcar 'decide-table-load-file
-          (directory-files-recursively dir ""))
-  )
+          (directory-files-recursively dir "")))
 
 (defun decide-whereto-compass-4 ()
   (interactive)
