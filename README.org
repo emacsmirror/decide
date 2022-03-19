@@ -225,6 +225,7 @@ can be used in a yasnippet snippet like this:
 ** 0.9 TBD
 - Multiple tables in the same file
 - Tables with name beginning with dash no longer hidden
+  (but all tables other than the first one in each file is)
 ** 0.8 2021-11-28
 - Weighted decide-tables
 - Parse decide-tables from text-files
@@ -248,7 +249,7 @@ Suggestions and bug-fixes are very much appreciated. This was
 my first attempt at writing a mode for Emacs, and I have very
 little experience with elisp (or any lisp) in general.
 ** License
- Copyright 2016, 2017, 2019, 2021 Pelle Nilsson et al
+ Copyright 2016, 2017, 2019, 2021, 2022 Pelle Nilsson et al
 
  Author: Pelle Nilsson <perni@lysator.liu.se>
  Version: 0.8
