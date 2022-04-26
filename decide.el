@@ -382,6 +382,9 @@
                                    table-name-as-range-spec)))
               (t table-name))))))
 
+(defun decide-string-from-table (table-name)
+  (decide-choose-from-table table-name table-name))
+
 (defun decide-visible-tables ()
   (remove-if
    (lambda (x)
