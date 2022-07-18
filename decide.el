@@ -518,7 +518,7 @@
       (decide-roll-die-nonempty decide-default-dice-faces)
     (decide-roll-die-nonempty faces)))
 
-(defun decide-roll-die (faces)
+(defun decide-roll-die-nonempty (faces)
   (cond ((stringp faces)
          (let ((sides (cdr (assoc-string faces decide-custom-dice t))))
            (if sides
