@@ -222,6 +222,8 @@ can be used in a yasnippet snippet like this:
 `(decide-choose-from-table "names-victorian")`.
 #+END_EXAMPLE
 ** Versions
+** 0.9.1 2022-07-18
+- Updated README with changelog for 0.9.0.
 ** 0.9.0 2022-07-18
 - Multiple tables in the same file
 - Tables with name beginning with dash no longer hidden
