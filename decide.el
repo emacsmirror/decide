@@ -504,6 +504,7 @@
                (string-to-number s)
              0)))
     (cond ((null s) default)
+          ((= n 0) 0)
           ((> n 0) n)
           ((string= "+" s) 0)
           ((string= "-" s) 0)
