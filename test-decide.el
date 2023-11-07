@@ -1,4 +1,4 @@
-;;; test-decide.el --- unit tests forrolling dice and other random things
+;;; test-decide.el --- unit tests for rolling dice and other random things
 ;; Copyright 2023 Pelle Nilsson
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
@@ -36,7 +36,7 @@
   (should (equal (decide-string-to-number "-" 1) 0))
   (should (equal (decide-string-to-number "x" 1) "x"))
   (should (equal (decide-string-to-number "3" 1) 3))
-  (should (equal (decide-string-to-number "-1" 1) "-1"))
+  (should (equal (decide-string-to-number "-1" 1) -1))
   (should (equal (decide-string-to-number "A" 1) "A"))
   (should (equal (decide-string-to-number nil 1) 1))
   )
@@ -51,7 +51,7 @@
   (should (equal (decide-make-dice-spec "1d8") '(1 8 0)))
   (should (equal (decide-make-dice-spec "2d6") '(2 6 0)))
   (should (equal (decide-make-dice-spec "dA") '(1 "A" 0)))
-  (should (equal (decide-make-dice-spec "4dF") '(1 "F" 0)))
+  (should (equal (decide-make-dice-spec "4dF") '(4 "F" 0)))
   (should (equal (decide-make-dice-spec "2d6+4") '(2 6 4)))
   (should (equal (decide-make-dice-spec "2d8+0") '(2 8 0)))
   (should (equal (decide-make-dice-spec "2d10+3") '(2 10 3)))
