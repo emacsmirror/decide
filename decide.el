@@ -1,8 +1,8 @@
 ;;; decide.el --- rolling dice and other random things
-;; Copyright 2016, 2017, 2019, 2021, 2022 Pelle Nilsson et al
+;; Copyright 2016, 2017, 2019, 2021-2023 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
-;; Version: 0.9
+;; Version: 0.10.0
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -500,14 +500,18 @@
   (decide-random-choice "forward,left,right,back,up,down"))
 
 (defun decide-string-to-number (s default)
+  "Convert s to number, in a way that makes sense for decide-make-dice-spec"
   (let ((n (if (stringp s)
                (string-to-number s)
              0)))
     (cond ((null s) default)
-          ((= n 0) 0)
-          ((> n 0) n)
+          ((string= "" s) default)
+          ((string= "0" s) 0)
+          ((not (= n 0)) n)
           ((string= "+" s) 0)
           ((string= "-" s) 0)
+          ((string= "+0" s) 0)
+          ((string= "-0" s) 0)
           (t s))))
 
 (defun decide-roll-custom-die (sides)
@@ -561,7 +565,7 @@
 (defun decide-make-dice-spec (s)
   "eg \"1d6\" -> (1 6 0) or \"2d10+2\" -> (2 10 2) or \"4dF\" -> (4 \"f\" 0)"
   (when (string-match
-         "^\\([1-9][0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
+         "^\\([0-9]*\\)d\\([0-9a-zA-Z]*\\)\\([+-][0-9]*\\)?"
          s)
     (list (decide-string-to-number (match-string 1 s) 1)
           (decide-string-to-number (match-string 2 s)
