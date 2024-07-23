@@ -222,35 +222,35 @@ can be used in a yasnippet snippet like this:
 `(decide-choose-from-table "names-victorian")`.
 #+END_EXAMPLE
 ** Versions
-** 0.10.0
+*** 0.10.0
 - Support +0 dice modifier bugfix (thanks wkmanire)
 - Bugfixed and cleaned up dice spec parser in general
 - ERT unit tests added
-** 0.9.1 2022-07-18
+*** 0.9.1 2022-07-18
 - Updated README with changelog for 0.9.0.
-** 0.9.0 2022-07-18
+*** 0.9.0 2022-07-18
 - Multiple tables in the same file
 - Tables with name beginning with dash no longer hidden
   (but all tables other than the first one in each file is)
 - Fixes decide-roll-die-nonempty typo (thanks thezeroalpha)
 - New helper function decide-string-from-table
-** 0.8 2021-11-28
+*** 0.8 2021-11-28
 - Weighted decide-tables
 - Parse decide-tables from text-files
 - Default faces for dice (decide-default-dice-faces variable, default 6)
 - Success dice (S) to roll Success or Fail
 - Dice-specification parser more forgiving
 - Tables with new format only parsing parts in square brackets
-** 0.7 2017-07-03
+*** 0.7 2017-07-03
 - Do What I Mean (dice or range spec before ? ? in buffer)
-** 0.6.2 2017-07-03
+*** 0.6.2 2017-07-03
 - Fixed regression with parsing dice in tables.
-** 0.6.1 2017-07-03
+*** 0.6.1 2017-07-03
 - Cleaned up dice-parsing and improved error-handling.
-** 0.6 2017-07-02
+*** 0.6 2017-07-02
 - Custom dice can be added in decide-custom-dice variable.
 - Various minor fixes.
-** 0.5 2016-03-06
+*** 0.5 2016-03-06
 - First public version.
 ** Help
 Suggestions and bug-fixes are very much appreciated. This was
