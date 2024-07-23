@@ -1,5 +1,5 @@
 ;;; decide.el --- rolling dice and other random things
-;; Copyright 2016, 2017, 2019, 2021-2023 Pelle Nilsson et al
+;; Copyright 2016, 2017, 2019, 2021-2024 Pelle Nilsson et al
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
 ;; Version: 0.10.0

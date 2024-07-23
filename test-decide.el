@@ -1,5 +1,5 @@
 ;;; test-decide.el --- unit tests for rolling dice and other random things
-;; Copyright 2023 Pelle Nilsson
+;; Copyright 2023-2024 Pelle Nilsson
 ;;
 ;; Author: Pelle Nilsson <perni@lysator.liu.se>
 ;; Version: 0.10.0
