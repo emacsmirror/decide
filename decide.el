@@ -212,42 +212,23 @@
   (let ((die (cdr (assoc difficulty decide-for-me-dice))))
     (nth (random (length die)) die)))
 
-(defun decide-for-me-result (name result)
-  (concat (if name
-            (concat "[" name "] ")
-            "")
-          "-> "
-          result
-          "\n"))
-
-(defun decide-insert (&rest ARGS)
-  (if buffer-read-only
-      (minibuffer-message (apply 'concat ARGS))
-    (apply 'insert ARGS)))
+(defun decide-insert (what result)
+  (let ((s (format "%s -> %s\n" what result)))
+    (if buffer-read-only
+        (minibuffer-message s)
+      (insert s))))
 
 (defun decide-for-me-likely ()
   (interactive)
-  (decide-insert
-   "? "
-   (decide-for-me-result
-    "likely"
-    (decide-for-me-get :likely))))
+  (decide-insert "? [likely]" (decide-for-me-get :likely)))
 
 (defun decide-for-me-normal ()
   (interactive)
-  (decide-insert
-   "? "
-   (decide-for-me-result
-    nil
-    (decide-for-me-get :normal))))
+  (decide-insert "?" (decide-for-me-get :normal)))
 
 (defun decide-for-me-unlikely ()
   (interactive)
-  (decide-insert
-   "? "
-   (decide-for-me-result
-    "unlikely"
-    (decide-for-me-get :unlikely))))
+  (decide-insert "? [unlikely]" (decide-for-me-get :unlikely)))
 
 (defun decide-range-average (&rest results)
   (floor (+ 0.5 (/ (apply '+ (mapcar 'float results))
@@ -273,7 +254,7 @@
    (t nil)))
 
 (defun decide-describe-range (from to fn draws)
-  (format "[%d-%d%s] -> "
+  (format "[%d-%d%s]"
           from
           to
           (if (> draws 1)
@@ -296,7 +277,7 @@
               (make-list draws (cons from to)))))
 
 (defun decide-from-range (from to fn draws)
-  (format "%d\n" (decide-from-range-get from to fn draws)))
+  (format "%d" (decide-from-range-get from to fn draws)))
 
 (defun decide-random-range (range-string)
   (interactive "sRange: ")
@@ -309,8 +290,8 @@
   (interactive "sRandom choice from (comma-separated choices): ")
   (let ((choices (mapcar 'string-trim (split-string choices-string ","))))
     (decide-insert
-     (decide-for-me-result (format "(%s)" (mapconcat 'identity choices ", "))
-                           (nth (random (length choices)) choices)))))
+     (format "(%s)" (mapconcat 'identity choices ", "))
+     (nth (random (length choices)) choices))))
 
 (defun decide-table-normalize-name (top-table-name table-name)
   (let ((parts (split-string table-name "[.]")))
@@ -397,8 +378,8 @@
                                       nil
                                       1)))
   (decide-insert
-   (decide-for-me-result (format "<%s>" table-name)
-                         (decide-choose-from-table table-name table-name))))
+   (format "[<%s>]" table-name)
+   (decide-choose-from-table table-name table-name)))
 
 (defun decide-table-parse-line (line)
   (cond
@@ -588,11 +569,8 @@
 
 (defun decide-roll-dice-insert (spec)
   (decide-insert
-   "["
-   (decide-describe-dice-spec spec)
-   "] -> "
-   (apply 'decide-roll-dice-spec spec)
-   "\n"))
+   (format "[%s]" (decide-describe-dice-spec spec))
+   (apply 'decide-roll-dice-spec spec)))
 
 (defun decide-roll-fate ()
   "Roll four Fate/Fudge dice."
@@ -729,6 +707,7 @@
 
 (define-key decide-mode-map (kbd "? RET") 'decide-question-return)
 (define-key decide-mode-map (kbd "? SPC") 'decide-question-space)
+(define-key decide-mode-map (kbd "? )") 'decide-question-right-paren)
 
 (provide 'decide)
 ;;; decide.el ends here
