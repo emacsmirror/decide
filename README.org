@@ -183,35 +183,31 @@ in Emacs with /decide-mode/ enabled. All the functions
 can be called outside of /decide-mode/ as well of
 course or bound globally.
 All the /decide-mode/ shortcuts have ? as a prefix.
-The keys pressed have been awkwardly inserted in
-the example text below.
-
-- Answer yes an no questions. Like this? -> YES *(? ?)*
-- Roll dice: [2d6] -> (5 1) = 6 *(? D)*
-- Roll dice with modifier: [2d6+1] -> (5 3) +1 = 9 *(? d 2 d 6 + 1 RET)*
-- Roll more unusual dice, like FATE/Fudge dice: [4dF] -> (- 0 + +) = 1 *(? F)*
-- There are several special shortcuts for dice to save some typing: [1d20] -> = 20 *(? 2 0)*
-- Draw a cards: [<card>] -> 2 Clubs *(? t c a r d RET)*
-- Pick a number from a range: [1-10] -> 5 *(? r 1 - 1 0 RET)*
-- Pick a number from a range, but lower numbers more likely: [1-10 (lowest of 2)] -> 4 *(? r 1 < < 1 0 RET)*
-- Make lower numbers even more likely by adding more signs: [1-10 (lowest of 4)] -> 1 *(? r 1 < < < < 1 0 RET)*
-- Of course it works to make higher numbers more likely as well: [1-10 (highest of 3)] -> 9 *(? r 1 > > > 1 0 RET)*
-- Numbers more likely closer to the center of the range: [1-10 (average of 3)] -> 4 *(? r 1 - - - 1 0 RET)*
-- Random directions:
-- [(N,S,E,W)] -> N *(? w 4)*
-- [(N,S,E,W,NE,NW,SE,SW)] -> NW *(? w 8)*
-- [(forward,left,right,back)] -> right *(? W 4)*
-- ... and a few more like those.
-- Generate strings from silly included example tables: [<example-dragon>] -> 3 ice dragons *(? t e x a m p l e - d TAB RET)*
-- Another one: [<example-dragon>] -> cute dragon *(? t e x a m p l e - d TAB RET)*
-
-(The variable /decide-tables/ can be set up with the tables to generate
-strings from and it can include die-rolls and ranges as well to
-insert random numbers, and refer to other tables to build
-up more complex texts. Tables can also be defined in simple text
-files that can be loaded using the functions /decide-table-load-dir/
-and /decide-table-load-file/. See /random-tables/ sub-directory
-for examples.)
+This is not a complete list of all available key-bindings
+and features. See /decide.el/ code for that.
+|-----------------------------------------+-------------------------------+--------------------------------------|
+| What to decide                          | Keys                          | Example Output                       |
+|-----------------------------------------+-------------------------------+--------------------------------------|
+| Answer yes or no question               | ? ?                           | -> YES                               |
+| ... but more likely to be yes           | ? +                           | -> YES                               |
+| ... but less likely to be yes           | ? -                           | -> NO                                |
+| Roll 1d6                                | ? 6                           | [1d6] -> 3                           |
+| Roll 2d6                                | ? D                           | [2d6] -> (5 1) = 6                   |
+| Roll 1d20                               | ? 2 0                         | [1d20] -> = 20                       |
+| Roll dice with modifier                 | ? d 2 d 6 + 1 RET             | [2d6+1] -> (5 3) +1 = 9              |
+| Roll four FATE/Fudge dice               | ? F                           | [4dF] -> (- 0 + +) = 1               |
+| Pick a number from a range              | ? r 1 - 1 0 RET               | [1-10] -> 5                          |
+| ... make lower more likely              | ? r 1 < < 1 0 RET             | [1-10 (lowest of 2)] -> 4            |
+| ... make lower numbers even more likely | ? r 1 < < < < 1 0 RET         | [1-10 (lowest of 4)] -> 1            |
+| ... make higher numbers more likely     | ? r 1 > > > 1 0 RET           | [1-10 (highest of 3)]                |
+| ... make edian numbers more likely      | ? r 1 - - - 1 0 RET           | [1-10 (average of 3)] -> 4           |
+| Random compass direction (from 4)       | ? w 4                         | [(N,S,E,W)] -> N                     |
+| Random compass direction (from 8)       | ? w 8                         | [(N,S,E,W,NE,NW,SE,SW)] -> NW        |
+| Random relative direction               | ? W 4                         | [(forward,left,right,back)] -> right |
+| Draw a card from included table         | ? t c a r d RET               | [<card>] -> 2 Clubs                  |
+| Generate dragon(s) from example table   | ? t e x a m p l e - d TAB RET | [<example-dragon>] -> 3 ice dragons  |
+| ... another one                         | ? t e x a m p l e - d TAB RET | [<example-dragon>] -> cute dragon    |
+|-----------------------------------------+-------------------------------+--------------------------------------|
 ** Customizing Output
 Since version 0.10.0 there is a variable /decide-output-format/ that
 can be used to control what is inserted by decide-mode functions.
