@@ -212,6 +212,21 @@ up more complex texts. Tables can also be defined in simple text
 files that can be loaded using the functions /decide-table-load-dir/
 and /decide-table-load-file/. See /random-tables/ sub-directory
 for examples.)
+** Customizing Output
+Since version 0.10.0 there is a variable /decide-output-format/ that
+can be used to control what is inserted by decide-mode functions.
+
+If set to a string it is used as the format-string for a call to
+the standard emacs-lisp format function, that will also receive
+two strings: /what/ is being generated (e.g. a dice-specifier or
+name of a table) and the /result/ that was generated. The format-string
+can use %1$s and %2$s respectively to refer to the /what/ and /result/
+strings (or use %s for both if used in that order).
+
+If set to a function that function will be called with the two
+string arguments /what/ and /result/ and is expected to return
+the string to be inserted. If nil is returned nothing is inserted
+(other than what the function itself may already have inserted).
 ** Use in yasnippets
 Not a feature of /decide-mode/ itself, but it is easy to embed calls to
 various /decide-/ functions in yasnippet files. A random table
@@ -222,7 +237,8 @@ can be used in a yasnippet snippet like this:
 `(decide-choose-from-table "names-victorian")`.
 #+END_EXAMPLE
 ** Versions
-*** 0.10.0
+*** 0.10.0 TBD
+- decide-output-format variable to control output format
 - Support +0 dice modifier bugfix (thanks wkmanire)
 - Bugfixed and cleaned up dice spec parser in general
 - ERT unit tests added

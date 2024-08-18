@@ -192,6 +192,16 @@
   custom names in decide-custom-dice."
   )
 
+(defvar decide-output-format "%s -> %s\n"
+  "How to format output from decide-mode functions. If this
+  is a string it is used as first argument for the standard elisp
+  format function, to format two strings (for what was generated
+  and what the results were). If instead the value is a function
+  that function will be called with those two strings and the
+  returned value will be inserted. If the function returns
+  nil nothing will be inserted."
+  )
+
 (setq decide-for-me-dice
       (let ((ya "YES+")
             (y "YES")
@@ -213,10 +223,14 @@
     (nth (random (length die)) die)))
 
 (defun decide-insert (what result)
-  (let ((s (format "%s -> %s\n" what result)))
-    (if buffer-read-only
-        (minibuffer-message s)
-      (insert s))))
+  (let ((s (cond ((stringp decide-output-format)
+                  (format decide-output-format what result))
+                 ((functionp decide-output-format)
+                  (funcall decide-output-format what result))
+                 (t (error "decide-output-format must be string or function")))))
+    (when s (if buffer-read-only
+                (minibuffer-message s)
+              (insert s)))))
 
 (defun decide-for-me-likely ()
   (interactive)
