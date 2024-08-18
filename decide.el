@@ -554,7 +554,7 @@
     (if (= 0 mod)
         (if (> (length rolled) 1)
             (format "(%s) = %d" rolled-description sum)
-          (format "= %d" sum))
+          (format "%d" sum))
       (format "(%s) %+d = %d" rolled-description mod sum))))
 
 (defun decide-make-dice-spec (s)
