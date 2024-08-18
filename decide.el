@@ -170,11 +170,24 @@
   "Alist specifying tables used for the decide-from-table function.")
 
 (defvar decide-custom-dice
-  '(("F" . ((0 "0")
+  '(
+    ;; Fudge/FATE dice
+    ("F" . ((0 "0")
             (-1 "-")
             (1 "+")))
+
+    ;; Success/Fail dice
     ("S" . ((0 "Fail")
             (1 "Success")))
+
+    ;; For rolling buckets of dice (roll d6 and hit on 6+, 5+ etc)
+    ("B6" . ((0 "1") (0 "2") (0 "3") (0 "4") (0 "5") (1 "6")))
+    ("B5" . ((0 "1") (0 "2") (0 "3") (0 "4") (1 "5") (1 "6")))
+    ("B4" . ((0 "1") (0 "2") (0 "3") (1 "4") (1 "5") (1 "6")))
+    ("B3" . ((0 "1") (0 "2") (1 "3") (1 "4") (1 "5") (1 "6")))
+    ("B2" . ((0 "1") (1 "2") (1 "3") (1 "4") (1 "5") (1 "6")))
+
+    ;; Average dice
     ("A" . ((2 "2")
             (3 "3")
             (3 "3")

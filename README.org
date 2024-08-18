@@ -60,9 +60,11 @@ It is also possible to use custom named dice that can have any number of sides
 that has any text on. Each side must still be given a value, as the sum of all
 rolled dice is always printed. Custom dice are specified in the variable
 /decide-custom-dice/ Included by default are dice F (for Fudge/Fate dice), S
-(results in Fail or Success), and A (for average dice, a 6-sided die labelled 2,
-3, 3, 4, 4, 5). To roll a custom die just use its name where the number of sides
-of a die would normally be, e.g. 4dF to roll 4 Fudge/Fate dice.
+(results in Fail or Success), B6 (for rolling a bucket of dice, counting 6s as
+hits), B5 (like B6 but hits on 5-6), B4 (you get the idea), B3, B2, and A
+(average dice, a 6-sided die labelled 2, 3, 3, 4, 4, 5). To roll a custom die
+just use its name where the number of sides of a die would normally be, e.g. 4dF
+to roll 4 Fudge/Fate dice.
 
 Custom dice can be given names of any length, but case is ignored, so a dF is
 the same as a df. It is thus not possible to specify dice that have the same
