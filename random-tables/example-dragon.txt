@@ -1,23 +1,45 @@
 ;main
-3,dragon
-[prefix]dragon
-[2-3] [prefix]dragons
-[prefix]dragon
-[2d4]-headed dragon
-[1d3+1] dragons
+[type]
+2,[adj] [type]
+[noun] [type]
+3,[adj] [noun] [type]
+[prefix]-[type]
+[adj] [prefix][type]
+
+;type
+25,dragon
+wyrm
+wyvern
+
+;adj
+[2d4]-headed
+[example-primary-color]
+ancient
+cunning
+cute
+epic
+huge
+old
+royal
+small
+undead
+wise
+young
+gargantuan
+gothic
+serpentine
+volcanic
 
 ;prefix
-1,
-ice 
-undead 
-epic 
-old 
-semi-
-cute 
-[example-primary-color] 
-ugly 
+lich
+semi
+shadow
 
-
-
-
-
+;noun
+ice
+gold
+silver
+ethereal
+storm
+metal
+star

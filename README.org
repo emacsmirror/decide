@@ -1,15 +1,40 @@
 * decide-mode.el
 Random decisions for Emacs, with functions and a minor mode. Roll dice and
-generate random numbers and text in a few other ways. Mostly inspired by
-tools and activities related to being a game master in role-playing games or
-playing solitaire games, but may be useful beyond that.
+generate random numbers and text in a few other ways. Mostly inspired by tools
+and activities related to role-playing games, but may be useful beyond that.
+** Examples (Quick Overview)
+There is a sequence of keys to press, starting with a question-mark, and some
+functions will prompt for more input. This is not a complete list of all
+functions.
+|-----------------------+-------+----------------+-----------------|
+| What to decide        | Keys  | Input          | Example Output  |
+|-----------------------+-------+----------------+-----------------|
+| Yes or no             | ? ?   |                | YES             |
+| ... probably yes      | ? +   |                | YES             |
+| ... probably no       | ? -   |                | NO              |
+| Roll 1d6              | ? 6   |                | 3               |
+| Roll 2d6              | ? D   |                | (5 1) = 6       |
+| Roll 1d20             | ? 2 0 |                | 20              |
+| Roll dice (general)   | ? d   | 2d6+1          | (5 3) +1 = 9    |
+| Roll four FATE dice   | ? F   |                | (- 0 + +) = 1   |
+| Roll 5d6 and count 6s | ? d   | 5dB6           | (6 3 2 6 4) = 2 |
+| Number from range     | ? r   | 1-10           | 5               |
+| ... low likely        | ? r   | 1<<10          | 4               |
+| ... low more likely   | ? r   | 1<<<<10        | 1               |
+| ... high likely       | ? r   | 1>>10          | 7               |
+| Choose from list      | ? c   | apple,orange   | orange          |
+| Random dir (of 4)     | ? w 4 |                | N               |
+| Random dir (of 8)     | ? w 8 |                | NW              |
+| Use random table      | ? t   | example-dragon | wise ice dragon |
+|-----------------------+-------+----------------+-----------------|
+** Introduction
+Random results from /decide-mode/ are inserted at point in the current buffer if
+possible, otherwise only echoed in the mini-buffer. The default keyboard
+bindings for the minor-mode are intended to be convenient to trigger as part of
+typing regular text, by pressing ? followed by various other keys.
 
-Results are inserted at point in active buffer if possible, otherwise only
-echoed in the mini-buffer. The default keyboard bindings for the minor-mode are
-intended to be convenient to trigger as part of typing regular text, by pressing
-? followed by various other keys to quickly get some random result inserted in
-the buffer. A ? followed by space or enter will insert the ? itself and the
-following space or enter, so normally /decide-mode/ should not interfere with
+A ? followed by space, enter, or a right paren will insert the ? itself and the
+next key as expected, so normally /decide-mode/ should not interfere with
 typing.
 
 The default binding of "? ?" (since version 0.7) is /decide-dwim-insert/, a function
@@ -143,20 +168,20 @@ A name like /fff.ttt/ can be used for table /ttt/ that was declared in
 file /fff/.
 
 A simple table to generate a primary color, with green being twice
-as likely to be chosen could look like this:
+as likely to be chosen could look like this (in file /primary-color.txt/):
 #+BEGIN_EXAMPLE
-;primary-color
+;main
 red
 2,green
 blue
 #+END_EXAMPLE
 
-The following table in another file refers to
-the previous table, and it also makes use of both
+The following table in another file, /paint-buckets.txt/
+refers to the previous table, and it also makes use of both
 a random range and a die-roll, where one of the
 phrases will be used four times as often as the other:
 #+BEGIN_EXAMPLE
-;paint-buckets
+;main
 4,[2-4] buckets of [primary-color] paint
 [1d3+2] empty paint buckets
 #+END_EXAMPLE
@@ -170,46 +195,18 @@ directory and put a single call like
 /(decide-table-load-dir "~/.emacs.d/random-generators")/
 in emacs' init script to make sure all tables are always loaded.
 
-Blank lines in files are ignored. If a blank phrase is needed (as in the
-/random-tables/example-dragon-prefix.txt/ file) a weight can be
-used alone on a line, just a number followed by a comma. Lines beginning
-with a # are comments and are ignored.
+Blank lines in table files are ignored. If a blank phrase is needed (as in the
+/random-tables/example-dragon-prefix.txt/ file) a weight can be used alone on a
+line, just a number followed by a comma. Lines beginning with a # are comments
+and are ignored.
 
 The format of the table files is based on the format used by [[http://www.random-generator.com/][Abulafia (random-generator.com)]],
 that is a site containing thousands of random-generator tables, but lacking
-most of the advanced functions on that site, and also there is no support
-for multiple tables in the same file in /decide-mode/ (yet?).
-** Example Output
-This is what it can look like when typing a text
-in Emacs with /decide-mode/ enabled. All the functions
-can be called outside of /decide-mode/ as well of
-course or bound globally.
-All the /decide-mode/ shortcuts have ? as a prefix.
-This is not a complete list of all available key-bindings
-and features. See /decide.el/ code for that.
-|-----------------------------------------+-------------------------------+--------------------------------------|
-| What to decide                          | Keys                          | Example Output                       |
-|-----------------------------------------+-------------------------------+--------------------------------------|
-| Answer yes or no question               | ? ?                           | -> YES                               |
-| ... but more likely to be yes           | ? +                           | -> YES                               |
-| ... but less likely to be yes           | ? -                           | -> NO                                |
-| Roll 1d6                                | ? 6                           | [1d6] -> 3                           |
-| Roll 2d6                                | ? D                           | [2d6] -> (5 1) = 6                   |
-| Roll 1d20                               | ? 2 0                         | [1d20] -> = 20                       |
-| Roll dice with modifier                 | ? d 2 d 6 + 1 RET             | [2d6+1] -> (5 3) +1 = 9              |
-| Roll four FATE/Fudge dice               | ? F                           | [4dF] -> (- 0 + +) = 1               |
-| Pick a number from a range              | ? r 1 - 1 0 RET               | [1-10] -> 5                          |
-| ... make lower more likely              | ? r 1 < < 1 0 RET             | [1-10 (lowest of 2)] -> 4            |
-| ... make lower numbers even more likely | ? r 1 < < < < 1 0 RET         | [1-10 (lowest of 4)] -> 1            |
-| ... make higher numbers more likely     | ? r 1 > > > 1 0 RET           | [1-10 (highest of 3)]                |
-| ... make edian numbers more likely      | ? r 1 - - - 1 0 RET           | [1-10 (average of 3)] -> 4           |
-| Random compass direction (from 4)       | ? w 4                         | [(N,S,E,W)] -> N                     |
-| Random compass direction (from 8)       | ? w 8                         | [(N,S,E,W,NE,NW,SE,SW)] -> NW        |
-| Random relative direction               | ? W 4                         | [(forward,left,right,back)] -> right |
-| Draw a card from included table         | ? t c a r d RET               | [<card>] -> 2 Clubs                  |
-| Generate dragon(s) from example table   | ? t e x a m p l e - d TAB RET | [<example-dragon>] -> 3 ice dragons  |
-| ... another one                         | ? t e x a m p l e - d TAB RET | [<example-dragon>] -> cute dragon    |
-|-----------------------------------------+-------------------------------+--------------------------------------|
+most of the advanced functions on that site. (NOTE: It seems like Abulafia
+has had issues for many years now, and currently (August 2024) the site seems
+broken with just error messages and almost empty pages). The format is
+also similar to the format used for [[https://campaignwiki.org/hex-describe][Hex Describe's rules]] (but lacking
+most of the features supported by that generator).
 ** Customizing Output
 Since version 0.10.0 there is a variable /decide-output-format/ that
 can be used to control what is inserted by decide-mode functions.
@@ -225,6 +222,12 @@ If set to a function that function will be called with the two
 string arguments /what/ and /result/ and is expected to return
 the string to be inserted. If nil is returned nothing is inserted
 (other than what the function itself may already have inserted).
+
+When creating custom functions for decide-mode, for instance to when binding a
+key to roll some special dice, note that /decide-output-format/ can easily be
+bound using /let/ around calls to /decide-mode/ functions to control the way the
+results are inserted without affecting the global (or buffer-local)
+configuration.
 ** Use in yasnippets
 Not a feature of /decide-mode/ itself, but it is easy to embed calls to
 various /decide-/ functions in yasnippet files. A random table
@@ -240,6 +243,7 @@ can be used in a yasnippet snippet like this:
 - Support +0 dice modifier bugfix (thanks wkmanire)
 - Bugfixed and cleaned up dice spec parser in general
 - ERT unit tests added
+- Added bucket-of-dice custom dice B2-B6
 *** 0.9.1 2022-07-18
 - Updated README with changelog for 0.9.0.
 *** 0.9.0 2022-07-18
