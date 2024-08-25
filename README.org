@@ -33,9 +33,9 @@ possible, otherwise only echoed in the mini-buffer. The default keyboard
 bindings for the minor-mode are intended to be convenient to trigger as part of
 typing regular text, by pressing ? followed by various other keys.
 
-A ? followed by space, enter, or a right paren will insert the ? itself and the
-next key as expected, so normally /decide-mode/ should not interfere with
-typing.
+A ? followed by space, enter, or a closing parenthesis will insert the ? itself
+and the next key as expected, so normally /decide-mode/ should not interfere
+with typing.
 
 The default binding of "? ?" (since version 0.7) is /decide-dwim-insert/, a function
 that looks in the buffer immediately before point and if it finds a dice
@@ -62,6 +62,20 @@ be a + or - inserted as well. Those can be ignored or interpreted as for
 instance "and" and "or", for use in some RPG systems. The probability of a +
 or - appearing will depend on which of the functions is called (see the
 confusingly named function /decide-for-me-dice/ for the exact probabilities).
+** Installation
+Load the file /decide.el/ (e.g. /(load-file "~/.emacs.d/lisp/decide.el")) and
+then enable it in a buffer by running /M-x decide-mode/.
+
+To always have it enabled for a specific major-mode, add it to the appropriate
+hook, e.g.:
+#+BEGIN_EXAMPLE
+(defun my-org-mode-hook ()
+        (decide-mode 1))
+    (add-hook 'org-mode-hook 'my-org-mode-hook))
+#+END_EXAMPLE
+
+To only enable it for a specific file, check the documentation for [[https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Variables.html][GNU Emacs
+File Variables]], and of course it can also be [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html][for an entire directory]].
 ** Die Rolls
 Die-rolls are specified in common dice-notation, like 3d6 for rolling 3
 6-sided dice, or 2d4+1 to roll 2 4-sided dice and add 1 to the result.
