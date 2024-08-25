@@ -662,7 +662,7 @@
 
 (defun decide-find-last-ws ()
   (save-excursion
-    (let ((p (search-backward-regexp "[\s\n(]")))
+    (let ((p (search-backward-regexp "[\s\n(]" nil t)))
       (if p (+ p 1) (point-min)))
     )
   )
