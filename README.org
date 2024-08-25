@@ -232,13 +232,25 @@ name of a table) and the /result/ that was generated. The format-string
 can use %1$s and %2$s respectively to refer to the /what/ and /result/
 strings (or use %s for both if used in that order).
 
+For example to only output the generated result (without describing
+what was generated) and add a single trailing space:
+#+BEGIN_EXAMPLE
+(setq decide-output-format "%2$s ")
+#+END_EXAMPLE
+
+This outputs the result only, and also makes it appear
+bold in org-mode:
+#+BEGIN_EXAMPLE
+(setq decide-output-format "**%2$s** ")
+#+END_EXAMPLE
+
 If set to a function that function will be called with the two
 string arguments /what/ and /result/ and is expected to return
 the string to be inserted. If nil is returned nothing is inserted
 (other than what the function itself may already have inserted).
 
 When creating custom functions for decide-mode, for instance to when binding a
-key to roll some special dice, note that /decide-output-format/ can easily be
+key to roll some special dice, note that /decide-output-format/ can be
 bound using /let/ around calls to /decide-mode/ functions to control the way the
 results are inserted without affecting the global (or buffer-local)
 configuration.
