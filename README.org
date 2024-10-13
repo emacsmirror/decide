@@ -264,12 +264,12 @@ can be used in a yasnippet snippet like this:
 `(decide-choose-from-table "names-victorian")`.
 #+END_EXAMPLE
 ** Versions
-*** 0.10.0 TBD
+*** 0.10.0 2024-10-13
 - decide-output-format variable to control output format
 - Support +0 dice modifier bugfix (thanks wkmanire)
 - Bugfixed and cleaned up dice spec parser in general
-- ERT unit tests added
-- Added bucket-of-dice custom dice B2-B6
+- ERT tests added
+- Added bucket-of-dice custom dice B2, B3, B4, B5, B6
 *** 0.9.1 2022-07-18
 - Updated README with changelog for 0.9.0.
 *** 0.9.0 2022-07-18
