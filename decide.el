@@ -679,10 +679,10 @@
          (range-spec (decide-parse-range s))
          )
     (cond (dice-spec (progn
-		       (delete-char (- (length s)))
+                       (delete-char (- (length s)))
                        (decide-roll-dice-insert dice-spec)))
           (range-spec (progn
-			(delete-char (- (length s)))
+                        (delete-char (- (length s)))
                         (decide-random-range s)))
           (t (decide-for-me-normal)))))
 
