@@ -394,7 +394,7 @@
   (decide-choose-from-table table-name table-name))
 
 (defun decide-visible-tables ()
-  (remove-if
+  (cl-remove-if
    (lambda (x)
      (string-match "[.]" (car x)))
    decide-tables))
@@ -418,13 +418,13 @@
    (t line)))
 
 (defun decide-table-parse-lines (lines)
-  (remove-if-not
+  (cl-remove-if-not
    (lambda (x) (or (consp x) (stringp x)))
    (mapcar 'decide-table-parse-line lines)))
 
 (defun decide-table-read-buffer ()
   (save-excursion
-    (beginning-of-buffer)
+    (goto-char (point-min))
     (decide-table-parse-lines (split-string (buffer-string) "\n" t))))
 
 (defun decide-make-table-name (file-name name)
@@ -679,10 +679,10 @@
          (range-spec (decide-parse-range s))
          )
     (cond (dice-spec (progn
-                       (delete-backward-char (length s))
+                       (delete-char (- (length s)))
                        (decide-roll-dice-insert dice-spec)))
           (range-spec (progn
-                        (delete-backward-char (length s))
+                        (delete-char (- (length s)))
                         (decide-random-range s)))
           (t (decide-for-me-normal)))))
 
